@@ -1,9 +1,9 @@
 # 🛡️ DepSec - CLI Security Tool for Package Scanning
 
-[![CI](https://github.com/your-org/DepSec/workflows/CI/badge.svg)](https://github.com/your-org/DepSec/actions)
+[![CI](https://github.com/YsfDev1/DepSec/workflows/CI/badge.svg)](https://github.com/your-org/DepSec/actions)
 [![Release](https://github.com/your-org/DepSec/workflows/Release/badge.svg)](https://github.com/your-org/DepSec/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/your-org/DepSec)](https://goreportcard.com/report/github.com/your-org/DepSec)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: GPL v3.0](https://www.gnu.org/licenses/gpl-3.0.txt)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
 
 > **DepSec is a CLI security tool that automatically scans packages and their dependencies in an isolated sandbox before they are installed on the host system.**
