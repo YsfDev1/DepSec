@@ -1,10 +1,10 @@
 # 🛡️ DepSec - CLI Security Tool for Package Scanning
 
-[![CI](https://github.com/YsfDev1/DepSec/workflows/CI/badge.svg)](https://github.com/your-org/DepSec/actions)
-[![Release](https://github.com/YsfDev1/DepSec/workflows/Release/badge.svg)](https://github.com/your-org/DepSec/releases)
-[![Go Report Card](https://goreportcard.com/badge/github.com/YsfDev1/DepSec)](https://goreportcard.com/report/github.com/your-org/DepSec)
-[![License: GPL v3.0](https://www.gnu.org/licenses/gpl-3.0.txt)
-[![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
+[![CI](https://github.com/YsfDev1/DepSec/actions/workflows/ci.yml/badge.svg)](https://github.com/YsfDev1/DepSec/actions/workflows/ci.yml)
+[![Release](https://github.com/YsfDev1/DepSec/actions/workflows/release.yml/badge.svg)](https://github.com/YsfDev1/DepSec/actions/workflows/release.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/YsfDev1/DepSec)](https://goreportcard.com/report/github.com/YsfDev1/DepSec)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white)](https://go.dev)
 
 > **DepSec is a CLI security tool that automatically scans packages and their dependencies in an isolated sandbox before they are installed on the host system.**
 
