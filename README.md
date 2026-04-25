@@ -1,6 +1,6 @@
 # 🛡️ DepSec - CLI Security Tool for Package Scanning
 
-[![CI](https://github.com/YsfDev1/DepSec/actions/workflows/ci.yml/badge.svg)](https://github.com/YsfDev1/DepSec/actions/workflows/ci.yml)
+[![CI](https://github.com/YsfDev1/DepSec/actions/workflows/go.yml/badge.svg)](https://github.com/YsfDev1/DepSec/actions/workflows/ci.yml)
 [![Release](https://github.com/YsfDev1/DepSec/actions/workflows/release.yml/badge.svg)](https://github.com/YsfDev1/DepSec/actions/workflows/release.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/YsfDev1/DepSec)](https://goreportcard.com/report/github.com/YsfDev1/DepSec)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
