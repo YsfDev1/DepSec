@@ -1,0 +1,167 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.22
+
+    - name: Run tests
+      run: go test -v ./...
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Get previous tag
+        PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+        
+        # Generate changelog
+        if [ -n "$PREV_TAG" ]; then
+          CHANGELOG=$(git log --pretty=format:"- %s (%h)" $PREV_TAG..HEAD)
+        else
+          CHANGELOG=$(git log --pretty=format:"- %s (%h)")
+        fi
+        
+        # Save to file for later use
+        echo "$CHANGELOG" > CHANGELOG_RELEASE.md
+        
+        # Set output for GitHub release
+        echo "changelog<<EOF" >> $GITHUB_OUTPUT
+        echo "$CHANGELOG" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Build release binaries
+      run: |
+        mkdir -p release
+        
+        # Build for multiple platforms
+        platforms=("linux/amd64" "linux/arm64" "darwin/amd64" "darwin/arm64" "windows/amd64")
+        
+        for platform in "${platforms[@]}"; do
+          IFS='/' read -r GOOS GOARCH <<< "$platform"
+          
+          echo "Building for $GOOS/$GOARCH"
+          
+          if [ "$GOOS" = "windows" ]; then
+            GOOS=$GOOS GOARCH=$GOARCH go build -o release/depsec-${GOOS}-${GOARCH}.exe main.go
+          else
+            GOOS=$GOOS GOARCH=$GOARCH go build -o release/depsec-${GOOS}-${GOARCH} main.go
+          fi
+        done
+
+    - name: Create release archives
+      run: |
+        cd release
+        
+        # Create tar.gz for Unix systems
+        for binary in depsec-linux-* depsec-darwin-*; do
+          if [ -f "$binary" ]; then
+            tar -czf "${binary}.tar.gz" "$binary"
+            rm "$binary"
+          fi
+        done
+        
+        # Create zip for Windows
+        for binary in depsec-windows-*.exe; do
+          if [ -f "$binary" ]; then
+            zip "${binary%.exe}.zip" "$binary"
+            rm "$binary"
+          fi
+        done
+
+    - name: Generate SHA256 checksums
+      run: |
+        cd release
+        sha256sum * > SHA256SUMS
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        body: |
+          ## DepSec ${{ github.ref_name }}
+          
+          ### 🚀 Installation
+          
+          #### Binary Downloads
+          Download the appropriate binary for your platform:
+          
+          ```bash
+          # Linux (AMD64)
+          curl -L -o depsec "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/depsec-linux-amd64.tar.gz"
+          tar -xzf depsec-linux-amd64.tar.gz
+          chmod +x depsec
+          sudo mv depsec /usr/local/bin/
+          
+          # macOS (Intel)
+          curl -L -o depsec "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/depsec-darwin-amd64.tar.gz"
+          tar -xzf depsec-darwin-amd64.tar.gz
+          chmod +x depsec
+          sudo mv depsec /usr/local/bin/
+          
+          # macOS (Apple Silicon)
+          curl -L -o depsec "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/depsec-darwin-arm64.tar.gz"
+          tar -xzf depsec-darwin-arm64.tar.gz
+          chmod +x depsec
+          sudo mv depsec /usr/local/bin/
+          
+          # Windows (AMD64)
+          curl -L -o depsec.zip "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/depsec-windows-amd64.zip"
+          unzip depsec.zip
+          move depsec.exe C:\Program Files\DepSec\
+          ```
+          
+          #### Go Install
+          ```bash
+          go install github.com/${{ github.repository }}/cmd/depsec@${{ github.ref_name }}
+          ```
+          
+          ### 📋 What's Changed
+          
+          ${{ steps.changelog.outputs.changelog }}
+          
+          ### 🔐 Verification
+          
+          Verify the downloaded binaries using the SHA256 checksums:
+          ```bash
+          sha256sum -c SHA256SUMS
+          ```
+          
+          ### 📚 Documentation
+          
+          - [Getting Started Guide](https://github.com/${{ github.repository }}#getting-started)
+          - [Full Documentation](https://github.com/${{ github.repository }}/docs)
+          - [API Reference](https://pkg.go.dev/github.com/${{ github.repository }})
+          
+          ---
+          
+          🛡️ *DepSec - Protecting your dependencies from supply chain attacks*
+        files: |
+          release/*
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update Homebrew formula (if applicable)
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        # This would update a Homebrew formula if you have one
+        echo "Homebrew formula update would go here"
