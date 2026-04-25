@@ -45,7 +45,7 @@ powershell -Command "Invoke-WebRequest -Uri 'https://github.com/your-org/DepSec/
 #### Go Install
 
 ```bash
-go install github.com/your-org/DepSec/cmd/depsec@latest
+go install github.com/YsfDev1/DepSec/cmd/depsec@latest
 ```
 
 ### First Use
