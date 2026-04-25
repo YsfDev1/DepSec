@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/YsfDev1/DepSec/workflows/CI/badge.svg)](https://github.com/your-org/DepSec/actions)
 [![Release](https://github.com/YsfDev1/DepSec/workflows/Release/badge.svg)](https://github.com/your-org/DepSec/releases)
-[![Go Report Card](https://goreportcard.com/badge/github.com/your-org/DepSec)](https://goreportcard.com/report/github.com/your-org/DepSec)
+[![Go Report Card](https://goreportcard.com/badge/github.com/YsfDev1/DepSec)](https://goreportcard.com/report/github.com/your-org/DepSec)
 [![License: GPL v3.0](https://www.gnu.org/licenses/gpl-3.0.txt)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
 
