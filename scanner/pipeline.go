@@ -67,12 +67,18 @@ func (p *Pipeline) ScanPackage(ctx context.Context, pkg, version, ecosystem stri
 		Clean:     true,
 	}
 
-	// Layer 1: CVE Matching
-	findings, err := p.cveChecker.CheckCVEs(ctx, pkg, version, ecosystem)
-	if err != nil {
-		return nil, fmt.Errorf("CVE layer failed: %w", err)
+	// Layer 1: CVE Matching (skip for "latest" version)
+	var findings []Finding
+	var err error
+	if version != "latest" {
+		findings, err = p.cveChecker.CheckCVEs(ctx, pkg, version, ecosystem)
+		if err != nil {
+			return nil, fmt.Errorf("CVE layer failed: %w", err)
+		}
+		result.Findings = append(result.Findings, findings...)
+	} else {
+		fmt.Printf("⚠️  Warning: CVE check skipped for %s@latest (use specific version for CVE scanning)\n", pkg)
 	}
-	result.Findings = append(result.Findings, findings...)
 
 	// Layer 2: Metadata Anomaly Detection
 	findings, err = p.metadataChecker.CheckMetadata(ctx, pkg, version, ecosystem)
@@ -148,10 +154,15 @@ type Dependency struct {
 
 // validateVersion validates that a version string follows semver format
 func validateVersion(version string) error {
+	// Allow "latest" as a special case
+	if version == "latest" {
+		return nil
+	}
+
 	// Basic semver validation: major.minor.patch
 	semverRegex := regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+$`)
 	if !semverRegex.MatchString(version) {
-		return fmt.Errorf("version must follow semver format (major.minor.patch), got: %s", version)
+		return fmt.Errorf("invalid version string: %s", version)
 	}
 	return nil
 }
