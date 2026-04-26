@@ -18,7 +18,7 @@ enables auto-scan, and every package install is silently screened
 from that point on.
 
 Run 'cc help' to get started.`,
-		Version: "0.1.2",
+		Version: "0.1.3",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
 				fmt.Println("SecChain (cc) — Package Security Scanner")

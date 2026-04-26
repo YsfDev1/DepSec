@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/YsfDev1/SecChain/config"
 	"github.com/YsfDev1/SecChain/output"
 	"github.com/YsfDev1/SecChain/scanner"
 	"github.com/spf13/cobra"
@@ -29,6 +30,14 @@ Supports multiple ecosystems: node, python, rust, go, ruby`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 
+		// Load config to get min severity
+		cfgManager, cfgErr := config.NewManager()
+		if cfgErr != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", cfgErr)
+		}
+		cfg := cfgManager.Get()
+		minSeverity := cfg.MinSeverity
+
 		// Initialize scanning pipeline
 		pipeline := scanner.NewPipeline()
 
@@ -38,8 +47,8 @@ Supports multiple ecosystems: node, python, rust, go, ruby`,
 		if scanPkg != "" {
 			// Scan specific package
 			if scanVersion == "" {
-				// Try to get latest version (for now use "latest")
-				scanVersion = "latest"
+				fmt.Fprintf(os.Stderr, "Error: --version is required when scanning a package\n")
+				os.Exit(1)
 			}
 
 			if scanEcosystem == "" {
@@ -53,6 +62,8 @@ Supports multiple ecosystems: node, python, rust, go, ruby`,
 				fmt.Fprintf(os.Stderr, "Error scanning package: %v\n", err)
 				os.Exit(1)
 			}
+			// Filter findings by min severity
+			result.Findings = filterFindingsBySeverity(result.Findings, minSeverity)
 			results = []*scanner.ScanResult{result}
 		} else if len(args) > 0 {
 			// Scan project directory
@@ -67,6 +78,10 @@ Supports multiple ecosystems: node, python, rust, go, ruby`,
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error scanning project: %v\n", err)
 				os.Exit(1)
+			}
+			// Filter findings by min severity for all results
+			for _, result := range results {
+				result.Findings = filterFindingsBySeverity(result.Findings, minSeverity)
 			}
 		} else {
 			fmt.Fprintf(os.Stderr, "Error: Either specify a package with --pkg or provide a project path\n")
@@ -107,10 +122,39 @@ Supports multiple ecosystems: node, python, rust, go, ruby`,
 
 func init() {
 	ScanCmd.Flags().StringVar(&scanPkg, "pkg", "", "Package name to scan")
-	ScanCmd.Flags().StringVar(&scanVersion, "version", "", "Package version (default: latest)")
+	ScanCmd.Flags().StringVar(&scanVersion, "version", "", "Package version (required)")
 	ScanCmd.Flags().StringVar(&scanEcosystem, "ecosystem", "", "Force ecosystem (node|python|rust|go|ruby)")
 	ScanCmd.Flags().StringVar(&scanFormat, "format", "table", "Output format (table|json|minimal)")
 	ScanCmd.Flags().BoolVar(&scanOffline, "offline", false, "Use cached data only")
 	ScanCmd.Flags().BoolVar(&scanStrict, "strict", false, "Strict mode - fail on any risk")
 	ScanCmd.Flags().BoolVar(&scanLogOnly, "log-only", false, "Log-only mode - never block")
+}
+
+// filterFindingsBySeverity filters findings based on minimum severity level
+func filterFindingsBySeverity(findings []scanner.Finding, minSeverity string) []scanner.Finding {
+	if minSeverity == "" {
+		return findings
+	}
+
+	severityOrder := map[string]int{
+		"low":      0,
+		"medium":   1,
+		"high":     2,
+		"critical": 3,
+	}
+
+	minLevel, ok := severityOrder[minSeverity]
+	if !ok {
+		return findings
+	}
+
+	var filtered []scanner.Finding
+	for _, finding := range findings {
+		level, ok := severityOrder[finding.Severity]
+		if ok && level >= minLevel {
+			filtered = append(filtered, finding)
+		}
+	}
+
+	return filtered
 }

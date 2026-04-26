@@ -58,7 +58,7 @@ func (r *Resolver) resolveNodeDependencies(projectPath string) ([]Dependency, er
 		return nil, fmt.Errorf("no package-lock.json found")
 	}
 
-	// Parse package-lock.json (handle both lockfileVersion 2 and 3)
+	// Parse package-lock.json (handle lockfileVersion 1, 2, and 3)
 	var packageLock struct {
 		LockfileVersion int `json:"lockfileVersion"`
 		Dependencies    map[string]struct {
@@ -88,14 +88,41 @@ func (r *Resolver) resolveNodeDependencies(projectPath string) ([]Dependency, er
 				Ecosystem: "node",
 			})
 		}
-	} else {
-		// Handle lockfileVersion 2 (npm 6 and earlier)
+	} else if packageLock.LockfileVersion == 2 {
+		// Handle lockfileVersion 2 (npm 6)
 		for name, info := range packageLock.Dependencies {
 			deps = append(deps, Dependency{
 				Name:      name,
 				Version:   info.Version,
 				Ecosystem: "node",
 			})
+		}
+	} else {
+		// Handle lockfileVersion 1 (npm 2-4) - nested structure
+		var packageLockV1 struct {
+			Dependencies map[string]struct {
+				Version      string `json:"version"`
+				Dependencies map[string]struct {
+					Version string `json:"version"`
+				} `json:"dependencies"`
+			} `json:"dependencies"`
+		}
+		if err := json.Unmarshal(data, &packageLockV1); err == nil {
+			for name, info := range packageLockV1.Dependencies {
+				deps = append(deps, Dependency{
+					Name:      name,
+					Version:   info.Version,
+					Ecosystem: "node",
+				})
+				// Handle nested dependencies
+				for nestedName, nestedInfo := range info.Dependencies {
+					deps = append(deps, Dependency{
+						Name:      nestedName,
+						Version:   nestedInfo.Version,
+						Ecosystem: "node",
+					})
+				}
+			}
 		}
 	}
 

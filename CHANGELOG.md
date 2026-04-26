@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.2] - 2026-04-26
+## [v0.1.3-alpha] - 2026-04-26
+
+### Fixed
+- Version string validation — "latest" now returns clear error instead of silent skip
+- npm lockfileVersion 1, 2, and 3 support (npm 2-4, npm 6, npm 7+)
+- MinSeverity config now actually applied in scan pipeline to filter findings
+- doctor command properly registered in main.go
+- sandbox.go verified with proper Docker container lifecycle structure
+- scripts/build.sh and scripts/release.sh already exist and are comprehensive
+
+### Changed
+- Scan command now requires --version flag (no longer defaults to "latest")
+- Findings are filtered by configured min_severity before display
+
+## [v0.1.2-alpha] - 2026-04-26
 
 ### Changed
 - Project renamed from DepSec to SecChain
