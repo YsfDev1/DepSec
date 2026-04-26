@@ -65,8 +65,8 @@ Provide clear instructions for how to test this PR:
 
 ```bash
 # Example testing commands
-go build -o depsec main.go
-./depsec scan --pkg example --version 1.0.0 --ecosystem node
+go build -o secchain main.go
+./cc scan --pkg example --version 1.0.0 --ecosystem node
 ```
 
 ---
@@ -91,4 +91,4 @@ go build -o depsec main.go
 
 ---
 
-**🛡️ DepSec - Protecting your dependencies from supply chain attacks**
+**🛡️ SecChain - Protecting your dependencies from supply chain attacks**

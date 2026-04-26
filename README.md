@@ -1,11 +1,12 @@
-# DepSec - CLI Security Tool for Package Scanning
+# SecChain — Package Security Scanner
 
-[![Release](https://github.com/YsfDev1/DepSec/workflows/Release/badge.svg)](https://github.com/YsfDev1/DepSec/releases)
-[![Go Report Card](https://goreportcard.com/badge/github.com/YsfDev1/DepSec)](https://goreportcard.com/report/github.com/YsfDev1/DepSec)
-[![License: GPL v3.0](https://img.shields.io/badge/License-GPLv3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white)](https://go.dev)
+[![CI](https://github.com/YsfDev1/SecChain/workflows/CI/badge.svg)](https://github.com/YsfDev1/SecChain/actions)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Go Report Card](https://goreportcard.com/badge/github.com/YsfDev1/SecChain)](https://goreportcard.com/report/github.com/YsfDev1/SecChain)
+[![Go Version](https://img.shields.io/badge/Go-1.26+-blue.svg)](https://golang.org)
+[![Release](https://github.com/YsfDev1/SecChain/workflows/Release/badge.svg)](https://github.com/YsfDev1/SecChain/releases)
 
-> **DepSec is a CLI security tool that automatically scans packages and their dependencies in an isolated sandbox before they are installed on the host system.**
+> **SecChain (cc) automatically scans packages in an isolated Docker sandbox before they touch your system.**
 
 ## Features
 
@@ -23,41 +24,41 @@
 
 ```bash
 # Linux (AMD64)
-curl -L -o depsec.tar.gz "https://github.com/YsfDev1/DepSec/releases/latest/download/depsec-linux-amd64.tar.gz"
-tar -xzf depsec.tar.gz
-chmod +x depsec
-sudo mv depsec /usr/local/bin/
+curl -L -o secchain.tar.gz "https://github.com/YsfDev1/SecChain/releases/latest/download/secchain-linux-amd64.tar.gz"
+tar -xzf secchain.tar.gz
+chmod +x cc
+sudo mv cc /usr/local/bin/
 
 # macOS (Intel)
-curl -L -o depsec.tar.gz "https://github.com/YsfDev1/DepSec/releases/latest/download/depsec-darwin-amd64.tar.gz"
-tar -xzf depsec.tar.gz
-chmod +x depsec
-sudo mv depsec /usr/local/bin/
+curl -L -o secchain.tar.gz "https://github.com/YsfDev1/SecChain/releases/latest/download/secchain-darwin-amd64.tar.gz"
+tar -xzf secchain.tar.gz
+chmod +x cc
+sudo mv cc /usr/local/bin/
 
 # Windows (AMD64)
-powershell -Command "Invoke-WebRequest -Uri 'https://github.com/YsfDev1/DepSec/releases/latest/download/depsec-windows-amd64.zip' -OutFile 'depsec.zip'; Expand-Archive -Path 'depsec.zip' -DestinationPath '.'; Move-Item 'depsec.exe' -Destination 'C:\Program Files\DepSec\'"
+powershell -Command "Invoke-WebRequest -Uri 'https://github.com/YsfDev1/SecChain/releases/latest/download/secchain-windows-amd64.zip' -OutFile 'secchain.zip'; Expand-Archive -Path 'secchain.zip' -DestinationPath '.'; Move-Item 'cc.exe' -Destination 'C:\Program Files\SecChain\'"
 ```
 
 #### Go Install
 
 ```bash
-go install github.com/YsfDev1/DepSec/cmd/depsec@latest
+go install github.com/YsfDev1/SecChain/cmd/secchain@latest
 ```
 
 ### First Use
 
 ```bash
 # Check system health
-depsec doctor
+cc doctor
 
 # Scan a package with known vulnerabilities
-depsec scan --pkg lodash --version 4.17.15 --ecosystem node
+cc scan --pkg lodash --version 4.17.15 --ecosystem node
 
 # Enable auto-scan for automatic protection
-depsec auto enable
+cc auto enable
 
 # View configuration
-depsec config show
+cc config show
 ```
 
 ## 📋 Example Usage
@@ -66,21 +67,21 @@ depsec config show
 
 ```bash
 # Scan a specific package
-depsec scan --pkg express --version 4.18.2 --ecosystem node
+cc scan --pkg express --version 4.18.2 --ecosystem node
 
 # Output:
 # PACKAGE  VERSION  ECOSYSTEM  SEVERITY  LAYER  REASON
 # express  4.18.2  node       LOW       CVE    CVE GHSA-qw6h-vgh9-j6wx: express vulnerable to XSS...
 
 # Scan with JSON output
-depsec scan --pkg requests --version 2.28.1 --ecosystem python --format json
+cc scan --pkg requests --version 2.28.1 --ecosystem python --format json
 ```
 
 ### Auto-Scan Protection
 
 ```bash
 # Enable automatic scanning
-depsec auto enable
+cc auto enable
 # ✅ Auto-scan enabled
 # Shell: zsh
 # Config: /home/user/.zshrc
@@ -89,8 +90,8 @@ depsec auto enable
 #    source /home/user/.zshrc
 
 # Check status
-depsec auto status
-# DepSec Auto-Scan Status:
+cc auto status
+# SecChain Auto-Scan Status:
 #   Enabled: true
 #   Shell: zsh
 #   Config: /home/user/.zshrc
@@ -101,16 +102,16 @@ depsec auto status
 
 ```bash
 # View current configuration
-depsec config show
+cc config show
 
 # Set strict mode
-depsec config set mode strict
+cc config set mode strict
 
 # Set minimum severity to high
-depsec config set min_severity high
+cc config set min_severity high
 
 # Enable offline mode
-depsec config set offline true
+cc config set offline true
 ```
 
 ## 🏗️ Architecture
@@ -152,13 +153,13 @@ graph TD
 
 | Command | Description |
 |---------|-------------|
-| `depsec scan` | Scan packages and projects |
-| `depsec doctor` | Check system health |
-| `depsec auto` | Manage auto-scan hooks |
-| `depsec config` | View and modify configuration |
-| `depsec report` | Show scan reports and history |
-| `depsec update-rules` | Update YARA rules and CVE cache |
-| `depsec version` | Show version information |
+| `cc scan` | Scan packages and projects |
+| `cc doctor` | Check system health |
+| `cc auto` | Manage auto-scan hooks |
+| `cc config` | View and modify configuration |
+| `cc report` | Show scan reports and history |
+| `cc update-rules` | Update YARA rules and CVE cache |
+| `cc version` | Show version information |
 
 ## 🛠️ Development
 
@@ -172,14 +173,14 @@ graph TD
 
 ```bash
 # Clone the repository
-git clone https://github.com/YsfDev1/DepSec.git
-cd DepSec
+git clone https://github.com/YsfDev1/SecChain.git
+cd SecChain
 
 # Install dependencies
 go mod tidy
 
 # Build the project
-go build -o depsec main.go
+go build -o secchain main.go
 
 # Run tests
 go test ./...
@@ -191,7 +192,7 @@ go test ./...
 ### Project Structure
 
 ```
-DepSec/
+SecChain/
 ├── cmd/           # CLI commands
 ├── scanner/       # Core scanning logic
 ├── config/        # Configuration management
@@ -216,7 +217,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 📊 Real-World Results
 
-DepSec has successfully identified real vulnerabilities in popular packages:
+SecChain has successfully identified real vulnerabilities in popular packages:
 
 ### lodash@4.17.15
 ```
@@ -245,7 +246,7 @@ lodash   4.17.15  node       LOW       CVE    CVE GHSA-p6mc-m468-83gw: Prototype
 
 ## 🔒 Security
 
-DepSec takes security seriously:
+SecChain takes security seriously:
 
 - ✅ **Never writes package contents to host filesystem**
 - ✅ **Uses isolated Docker containers for scanning**
@@ -253,7 +254,7 @@ DepSec takes security seriously:
 - ✅ **Operates with minimal required permissions**
 - ✅ **Follows principle of least privilege**
 
-For security issues, please email [security@depsec.dev](mailto:security@depsec.dev) instead of using public issues.
+For security issues, please email [security@secchain.dev](mailto:security@secchain.dev) instead of using public issues.
 
 ## 📜 License
 
@@ -269,12 +270,12 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ## 📞 Support
 
-- 🐛 [Report Bugs](https://github.com/YsfDev1/DepSec/issues)
-- 💡 [Request Features](https://github.com/YsfDev1/DepSec/issues)
-- 💬 [Discussions](https://github.com/YsfDev1/DepSec/discussions)
-- 📧 [Email Support](mailto:hello@depsec.dev)
-- 🔒 [Security Issues](mailto:security@depsec.dev)
+- 🐛 [Report Bugs](https://github.com/YsfDev1/SecChain/issues)
+- 💡 [Request Features](https://github.com/YsfDev1/SecChain/issues)
+- 💬 [Discussions](https://github.com/YsfDev1/SecChain/discussions)
+- 📧 [Email Support](mailto:hello@secchain.dev)
+- 🔒 [Security Issues](mailto:security@secchain.dev)
 
 ---
 
-**🛡️ DepSec - Protecting your dependencies from supply chain attacks**
+**🛡️ SecChain - Protecting your dependencies from supply chain attacks**

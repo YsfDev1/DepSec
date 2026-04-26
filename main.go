@@ -4,21 +4,27 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/YsfDev1/DepSec/cmd"
+	"github.com/YsfDev1/SecChain/cmd"
 	"github.com/spf13/cobra"
 )
 
 func main() {
 	var rootCmd = &cobra.Command{
-		Use:   "depsec",
-		Short: "CLI Security Tool for Package Scanning",
-		Long: `DepSec is a CLI tool that automatically scans packages in an isolated sandbox
-before they touch the host system. The user installs DepSec once,
+		Use:   "cc",
+		Short: "SecChain (cc) — Package Security Scanner",
+		Long: `SecChain (cc) is a CLI tool that automatically scans packages in an isolated sandbox
+before they touch the host system. The user installs SecChain once,
 enables auto-scan, and every package install is silently screened
 from that point on.
 
-Use "depsec help [command]" for more information about a specific command.`,
+Run 'cc help' to get started.`,
 		Version: "0.1.0",
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(args) == 0 {
+				fmt.Println("SecChain (cc) — Package Security Scanner")
+				fmt.Println("Run 'cc help' to get started.")
+			}
+		},
 	}
 
 	// Add subcommands
@@ -33,7 +39,7 @@ Use "depsec help [command]" for more information about a specific command.`,
 	// Global flags
 	rootCmd.PersistentFlags().Bool("verbose", false, "Enable verbose output")
 	rootCmd.PersistentFlags().Bool("quiet", false, "Suppress non-error output")
-	rootCmd.PersistentFlags().String("config", "", "Config file path (default is ~/.config/depsec/config.toml)")
+	rootCmd.PersistentFlags().String("config", "", "Config file path (default is ~/.config/secchain/config.toml)")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)

@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/YsfDev1/DepSec/output"
-	"github.com/YsfDev1/DepSec/scanner"
+	"github.com/YsfDev1/SecChain/output"
+	"github.com/YsfDev1/SecChain/scanner"
 	"github.com/spf13/cobra"
 )
 

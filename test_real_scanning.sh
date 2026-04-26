@@ -10,9 +10,9 @@ if ! command -v go &> /dev/null; then
 fi
 
 # Build the project
-echo "🔨 Building DepSec..."
-cd /home/yusuf/Belgeler/DepSec
-go build -o depsec main.go
+echo "🔨 Building SecChain..."
+cd /home/yusuf/Belgeler/SecChain
+go build -o secchain main.go
 
 if [ $? -ne 0 ]; then
     echo "❌ Build failed"
@@ -27,7 +27,7 @@ echo "🧪 Test 1: CVE Scanning with lodash@4.17.15"
 echo "Expected: CVE-2021-23337 (Prototype Pollution), CVE-2022-2879 (ReDoS)"
 echo ""
 
-./depsec scan --pkg lodash --version 4.17.15 --ecosystem node --format table
+./cc scan --pkg lodash --version 4.17.15 --ecosystem node --format table
 
 echo ""
 echo "================================"
@@ -37,7 +37,7 @@ echo "🧪 Test 2: Metadata Scanning with express@4.18.2"
 echo "Expected: Should show publish date, analyze install scripts"
 echo ""
 
-./depsec scan --pkg express --version 4.18.2 --ecosystem node --format table
+./cc scan --pkg express --version 4.18.2 --ecosystem node --format table
 
 echo ""
 echo "================================"
@@ -47,7 +47,7 @@ echo "🧪 Test 3: Python Package Scanning with requests@2.28.1"
 echo "Expected: Should query PyPI for metadata and CVEs"
 echo ""
 
-./depsec scan --pkg requests --version 2.28.1 --ecosystem python --format table
+./cc scan --pkg requests --version 2.28.1 --ecosystem python --format table
 
 echo ""
 echo "================================"
@@ -57,7 +57,7 @@ echo "🧪 Test 4: JSON Output Format"
 echo "Testing JSON output with lodash package..."
 echo ""
 
-./depsec scan --pkg lodash --version 4.17.15 --ecosystem node --format json | head -20
+./cc scan --pkg lodash --version 4.17.15 --ecosystem node --format json | head -20
 
 echo ""
 echo "================================"
@@ -67,7 +67,7 @@ echo "🧪 Test 5: Minimal Output Format"
 echo "Testing minimal output..."
 echo ""
 
-./depsec scan --pkg lodash --version 4.17.15 --ecosystem node --format minimal
+./cc scan --pkg lodash --version 4.17.15 --ecosystem node --format minimal
 
 echo ""
 echo "🎯 Analysis:"

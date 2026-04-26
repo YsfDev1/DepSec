@@ -6,9 +6,9 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/YsfDev1/DepSec/config"
-	"github.com/YsfDev1/DepSec/hooks"
-	"github.com/YsfDev1/DepSec/output"
+	"github.com/YsfDev1/SecChain/config"
+	"github.com/YsfDev1/SecChain/hooks"
+	"github.com/YsfDev1/SecChain/output"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +16,7 @@ var DoctorCmd = &cobra.Command{
 	Use:   "doctor",
 	Short: "Check system health",
 	Long: `Check Docker, ClamAV, shell hooks, and other dependencies.
-Perform a full health check of the DepSec environment.`,
+Perform a full health check of the SecChain environment.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Run health checks
 		checks := runHealthChecks()
@@ -185,7 +185,7 @@ func checkShellHooks() HealthCheck {
 		check.Passed = true
 	} else {
 		check.Message = "Auto-scan hooks not enabled"
-		check.Suggestion = "Run 'depsec auto enable' to enable automatic scanning"
+		check.Suggestion = "Run 'secchain auto enable' to enable automatic scanning"
 		check.Passed = true // Not having hooks enabled is not a failure
 	}
 
@@ -207,7 +207,7 @@ func checkConfiguration() HealthCheck {
 	if err := configManager.Validate(); err != nil {
 		check.Passed = false
 		check.Message = fmt.Sprintf("Invalid configuration: %v", err)
-		check.Suggestion = "Run 'depsec config reset' to restore defaults"
+		check.Suggestion = "Run 'secchain config reset' to restore defaults"
 		return check
 	}
 
@@ -229,7 +229,7 @@ func checkCacheDirectory() HealthCheck {
 		return check
 	}
 
-	cacheDir := filepath.Join(home, ".cache", "depsec")
+	cacheDir := filepath.Join(home, ".cache", "secchain")
 
 	// Check if directory exists or can be created
 	if _, err := os.Stat(cacheDir); os.IsNotExist(err) {
@@ -268,7 +268,7 @@ func checkYARARules() HealthCheck {
 		return check
 	}
 
-	rulesDir := filepath.Join(home, ".config", "depsec", "rules")
+	rulesDir := filepath.Join(home, ".config", "secchain", "rules")
 
 	// Check if rules directory exists
 	if _, err := os.Stat(rulesDir); os.IsNotExist(err) {
@@ -281,7 +281,7 @@ func checkYARARules() HealthCheck {
 	defaultRules := filepath.Join(rulesDir, "default.yar")
 	if _, err := os.Stat(defaultRules); os.IsNotExist(err) {
 		check.Message = "Default YARA rules file not found"
-		check.Suggestion = "Run 'depsec update-rules' to create default rules"
+		check.Suggestion = "Run 'secchain update-rules' to create default rules"
 		check.Passed = false
 		return check
 	}

@@ -87,7 +87,7 @@ func (s *ShellManager) DisableAutoScan() error {
 
 	currentContent := string(content)
 
-	// Remove DepSec hooks
+	// Remove SecChain hooks
 	newContent := s.removeHooks(currentContent)
 
 	// Write back to shell RC
@@ -122,16 +122,16 @@ func (s *ShellManager) generateHooks() string {
 
 // generateBashHooks generates bash/zsh hooks
 func (s *ShellManager) generateBashHooks() string {
-	return `# DepSec Auto-Scan Hooks (added by depsec auto enable)
-# DO NOT EDIT MANUALLY - use 'depsec auto disable' to remove
+	return `# SecChain Auto-Scan Hooks (added by cc auto enable)
+# DO NOT EDIT MANUALLY - use 'cc auto disable' to remove
 
 # npm hook
 npm() {
     if [[ "$1" == "install" || "$1" == "i" ]]; then
         for pkg in "${@:2}"; do
             if [[ "$pkg" != -* ]]; then
-                depsec scan --pkg "$pkg" --ecosystem node || {
-                    echo "⚠️  DepSec scan failed for $pkg"
+                cc scan --pkg "$pkg" --ecosystem node || {
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -r response
                     if [[ ! "$response" =~ ^[Yy]$ ]]; then
@@ -150,8 +150,8 @@ pip() {
     if [[ "$1" == "install" ]]; then
         for pkg in "${@:2}"; do
             if [[ "$pkg" != -* ]]; then
-                depsec scan --pkg "$pkg" --ecosystem python || {
-                    echo "⚠️  DepSec scan failed for $pkg"
+                cc scan --pkg "$pkg" --ecosystem python || {
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -r response
                     if [[ ! "$response" =~ ^[Yy]$ ]]; then
@@ -170,8 +170,8 @@ cargo() {
     if [[ "$1" == "add" || "$1" == "install" ]]; then
         for pkg in "${@:2}"; do
             if [[ "$pkg" != -* ]]; then
-                depsec scan --pkg "$pkg" --ecosystem rust || {
-                    echo "⚠️  DepSec scan failed for $pkg"
+                cc scan --pkg "$pkg" --ecosystem rust || {
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -r response
                     if [[ ! "$response" =~ ^[Yy]$ ]]; then
@@ -190,8 +190,8 @@ go() {
     if [[ "$1" == "get" || "$1" == "install" ]]; then
         for pkg in "${@:2}"; do
             if [[ "$pkg" != -* ]]; then
-                depsec scan --pkg "$pkg" --ecosystem go || {
-                    echo "⚠️  DepSec scan failed for $pkg"
+                cc scan --pkg "$pkg" --ecosystem go || {
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -r response
                     if [[ ! "$response" =~ ^[Yy]$ ]]; then
@@ -210,8 +210,8 @@ gem() {
     if [[ "$1" == "install" ]]; then
         for pkg in "${@:2}"; do
             if [[ "$pkg" != -* ]]; then
-                depsec scan --pkg "$pkg" --ecosystem ruby || {
-                    echo "⚠️  DepSec scan failed for $pkg"
+                cc scan --pkg "$pkg" --ecosystem ruby || {
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -r response
                     if [[ ! "$response" =~ ^[Yy]$ ]]; then
@@ -225,20 +225,20 @@ gem() {
     command gem "$@"
 }
 
-# End DepSec Auto-Scan Hooks`
+# End SecChain Auto-Scan Hooks`
 }
 
 // generateFishHooks generates fish shell hooks
 func (s *ShellManager) generateFishHooks() string {
-	return `# DepSec Auto-Scan Hooks (added by depsec auto enable)
-# DO NOT EDIT MANUALLY - use 'depsec auto disable' to remove
+	return `# SecChain Auto-Scan Hooks (added by cc auto enable)
+# DO NOT EDIT MANUALLY - use 'cc auto disable' to remove
 
 function npm
     if test "$argv[1]" = "install" -o "$argv[1]" = "i"
         for pkg in $argv[2..]
             if not string match -q "-*" $pkg
-                if not depsec scan --pkg $pkg --ecosystem node
-                    echo "⚠️  DepSec scan failed for $pkg"
+                if not cc scan --pkg $pkg --ecosystem node
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -l response
                     if not string match -qr "^[Yy]$" $response
@@ -256,8 +256,8 @@ function pip
     if test "$argv[1]" = "install"
         for pkg in $argv[2..]
             if not string match -q "-*" $pkg
-                if not depsec scan --pkg $pkg --ecosystem python
-                    echo "⚠️  DepSec scan failed for $pkg"
+                if not cc scan --pkg $pkg --ecosystem python
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -l response
                     if not string match -qr "^[Yy]$" $response
@@ -275,8 +275,8 @@ function cargo
     if test "$argv[1]" = "add" -o "$argv[1]" = "install"
         for pkg in $argv[2..]
             if not string match -q "-*" $pkg
-                if not depsec scan --pkg $pkg --ecosystem rust
-                    echo "⚠️  DepSec scan failed for $pkg"
+                if not cc scan --pkg $pkg --ecosystem rust
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -l response
                     if not string match -qr "^[Yy]$" $response
@@ -294,8 +294,8 @@ function go
     if test "$argv[1]" = "get" -o "$argv[1]" = "install"
         for pkg in $argv[2..]
             if not string match -q "-*" $pkg
-                if not depsec scan --pkg $pkg --ecosystem go
-                    echo "⚠️  DepSec scan failed for $pkg"
+                if not cc scan --pkg $pkg --ecosystem go
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -l response
                     if not string match -qr "^[Yy]$" $response
@@ -313,8 +313,8 @@ function gem
     if test "$argv[1]" = "install"
         for pkg in $argv[2..]
             if not string match -q "-*" $pkg
-                if not depsec scan --pkg $pkg --ecosystem ruby
-                    echo "⚠️  DepSec scan failed for $pkg"
+                if not cc scan --pkg $pkg --ecosystem ruby
+                    echo "⚠️  SecChain scan failed for $pkg"
                     echo "Install anyway? [y/N]"
                     read -l response
                     if not string match -qr "^[Yy]$" $response
@@ -328,18 +328,18 @@ function gem
     command gem $argv
 end
 
-# End DepSec Auto-Scan Hooks`
+# End SecChain Auto-Scan Hooks`
 }
 
-// isHooksEnabled checks if DepSec hooks are already enabled
+// isHooksEnabled checks if SecChain hooks are already enabled
 func (s *ShellManager) isHooksEnabled(content string) bool {
-	return strings.Contains(content, "# DepSec Auto-Scan Hooks")
+	return strings.Contains(content, "# SecChain Auto-Scan Hooks")
 }
 
-// removeHooks removes DepSec hooks from shell config
+// removeHooks removes SecChain hooks from shell config
 func (s *ShellManager) removeHooks(content string) string {
-	startMarker := "# DepSec Auto-Scan Hooks"
-	endMarker := "# End DepSec Auto-Scan Hooks"
+	startMarker := "# SecChain Auto-Scan Hooks"
+	endMarker := "# End SecChain Auto-Scan Hooks"
 
 	startIndex := strings.Index(content, startMarker)
 	if startIndex == -1 {

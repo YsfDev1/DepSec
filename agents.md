@@ -1,8 +1,8 @@
-# DepSec — CLI Security Tool: Full Project Brief
+# SecChain — CLI Security Tool: Full Project Brief
 
-## What is DepSec?
+## What is SecChain?
 A CLI tool that automatically scans packages in an isolated sandbox
-before they touch the host system. The user installs DepSec once,
+before they touch the host system. The user installs SecChain once,
 enables auto-scan, and every package install is silently screened
 from that point on.
 
@@ -54,7 +54,7 @@ from that point on.
 ### Layer 3 — Sandbox Scan (requires Docker)
 Flow:
   1. Pull package tarball from registry into memory (never write to host disk)
-  2. Spin up an ephemeral Docker container (DepSec's own minimal image)
+  2. Spin up an ephemeral Docker container (SecChain's own minimal image)
   3. Extract tarball inside container
   4. Run ClamAV scan inside container (if available)
   5. Run YARA rules against source files inside container
@@ -74,37 +74,37 @@ The host filesystem is never touched until the user explicitly approves.
   - Encoded network payloads
   - Known malicious code signatures from past supply chain attacks
 - User can add custom rules via --rules flag
-- Rules are updatable via: depsec update-rules
+- Rules are updatable via: cc update-rules
 
 ---
 
 ## Auto-Scan Feature
 
 ### Enable / Disable
-depsec auto enable    # enable automatic scanning on every package install
-depsec auto disable   # disable, return to manual-only mode
-depsec auto status    # show current auto-scan status and active layers
+cc auto enable    # enable automatic scanning on every package install
+cc auto disable   # disable, return to manual-only mode
+cc auto status    # show current auto-scan status and active layers
 
 ### How Auto-Scan Works
-When enabled, DepSec injects shell hooks into the user's shell config
+When enabled, SecChain injects shell hooks into the user's shell config
 (.bashrc / .zshrc / .fishrc) that wrap npm, pip, cargo, gem commands.
 
 The user types: npm install lodash
 What actually runs:
-  1. DepSec intercepts the call
+  1. SecChain intercepts the call
   2. Runs full scan pipeline on lodash
   3. If clean → proceeds with original npm install
   4. If risky → prompts user (or blocks in strict mode)
 
-Shell hook example (DepSec manages this automatically, user never writes it):
-  npm() { depsec scan --pkg "$2" --ecosystem node && command npm "$@"; }
+Shell hook example (SecChain manages this automatically, user never writes it):
+  npm() { cc scan --pkg "$2" --ecosystem node && command npm "$@"; }
 
-On depsec auto enable:
+On cc auto enable:
   → Detect user's shell automatically
   → Inject hooks
   → Print: "Auto-scan enabled. Restart your shell or run: source ~/.zshrc"
 
-On depsec auto disable:
+On cc auto disable:
   → Remove injected hooks cleanly
   → Print: "Auto-scan disabled."
 
@@ -113,30 +113,30 @@ On depsec auto disable:
 ## CLI Commands
 
 ### Scanning
-depsec scan [path]              # scan a local project directory
-depsec scan --pkg <name>        # scan a package before installing
-depsec scan --pkg <name>@<ver>  # scan a specific version
-depsec scan --ecosystem <node|python|rust|go|ruby>  # force ecosystem
+cc scan [path]              # scan a local project directory
+cc scan --pkg <name>        # scan a package before installing
+cc scan --pkg <name>@<ver>  # scan a specific version
+cc scan --ecosystem <node|python|rust|go|ruby>  # force ecosystem
 
 ### Auto-Scan
-depsec auto enable              # enable shell hooks for auto-scan
-depsec auto disable             # remove shell hooks
-depsec auto status              # show status + which layers are active
+cc auto enable              # enable shell hooks for auto-scan
+cc auto disable             # remove shell hooks
+cc auto status              # show status + which layers are active
 
 ### Reports
-depsec report                   # show last scan report
-depsec report --history         # show all past scan results
-depsec report --pkg <name>      # show report for a specific package
+cc report                   # show last scan report
+cc report --history         # show all past scan results
+cc report --pkg <name>      # show report for a specific package
 
 ### Configuration
-depsec config show              # show current config
-depsec config set <key> <val>   # set a config value
-depsec config reset             # reset to defaults
+cc config show              # show current config
+cc config set <key> <val>   # set a config value
+cc config reset             # reset to defaults
 
 ### Maintenance
-depsec update-rules             # update YARA rules and CVE DB cache
-depsec doctor                   # check Docker, ClamAV, shell hooks — full health check
-depsec version                  # show DepSec version
+cc update-rules             # update YARA rules and CVE DB cache
+cc doctor                   # check Docker, ClamAV, shell hooks — full health check
+cc version                  # show SecChain version
 
 ---
 
@@ -159,7 +159,7 @@ depsec version                  # show DepSec version
 - Silent watcher mode for teams that want visibility without interruption
 
 ### Severity Threshold
-depsec config set min_severity low|medium|high|critical
+cc config set min_severity low|medium|high|critical
 Only report and act on findings at or above the configured threshold.
 
 ---
@@ -173,10 +173,10 @@ Default (table):
   safe-package    2.3.1     CLEAN      —         —
 
 JSON mode (for CI/CD):
-  depsec scan --format json
+  cc scan --format json
 
 Minimal mode (for scripts):
-  depsec scan --format minimal
+  cc scan --format minimal
 
 ---
 
@@ -198,7 +198,7 @@ Minimal mode (for scripts):
 - ClamAV: shell out to clamd socket inside container (preferred over
   clamscan for speed), or clamscan as fallback
 
-- Config: TOML at ~/.config/depsec/config.toml
+- Config: TOML at ~/.config/secchain/config.toml
 
 - Shell hook management: detect shell from $SHELL, write/remove hooks
   programmatically from Go
@@ -207,7 +207,7 @@ Minimal mode (for scripts):
 
 ## Project Structure
 
-depsec/
+secchain/
 ├── cmd/
 │   ├── scan.go
 │   ├── auto.go
@@ -235,7 +235,7 @@ depsec/
 
 - Never write package contents to host filesystem at any point
 - Never require root/sudo for normal operation
-- Never modify the user's shell config without explicit depsec auto enable
+- Never modify the user's shell config without explicit cc auto enable
 - Never block the user silently — always explain why something was flagged
 - Never re-warn about missing Docker/ClamAV after the first warning
 - Do not reinstall or manage packages — only inspect
@@ -247,7 +247,7 @@ depsec/
 Build in this order, get each step working end-to-end before moving on:
 
 1. Project scaffold with the full structure above
-2. depsec doctor — checks Docker, ClamAV, shell, prints status
+2. cc doctor — checks Docker, ClamAV, shell, prints status
 3. Dependency resolver for Node.js (package-lock.json) and Python (requirements.txt)
 4. CVE layer: OSV API query + SQLite cache
 5. Metadata anomaly detection layer
@@ -255,7 +255,7 @@ Build in this order, get each step working end-to-end before moving on:
 7. Docker sandbox: container lifecycle, tarball extraction, destroy
 8. YARA integration inside sandbox
 9. ClamAV integration inside sandbox
-10. Shell hook injection for auto-scan (depsec auto enable/disable)
+10. Shell hook injection for auto-scan (cc auto enable/disable)
 
 For testing, use the existing Fedora distrobox container via:
 

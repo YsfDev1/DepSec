@@ -266,7 +266,7 @@ func (m *MetadataChecker) getNodePublishDate(ctx context.Context, pkg, version s
 	if err != nil {
 		return time.Time{}, err
 	}
-	req.Header.Set("User-Agent", "DepSec/0.1.0")
+	req.Header.Set("User-Agent", "SecChain/0.1.0")
 
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Do(req)
@@ -309,7 +309,7 @@ func (m *MetadataChecker) getPythonPublishDate(ctx context.Context, pkg, version
 	if err != nil {
 		return time.Time{}, err
 	}
-	req.Header.Set("User-Agent", "DepSec/0.1.0")
+	req.Header.Set("User-Agent", "SecChain/0.1.0")
 
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Do(req)
@@ -369,7 +369,7 @@ func (m *MetadataChecker) getNodeInstallScripts(ctx context.Context, pkg, versio
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", "DepSec/0.1.0")
+	req.Header.Set("User-Agent", "SecChain/0.1.0")
 
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Do(req)

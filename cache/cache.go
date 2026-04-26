@@ -26,7 +26,7 @@ func NewCache() (*Cache, error) {
 	}
 
 	// Open SQLite database
-	dbPath := filepath.Join(cacheDir, "depsec.db")
+	dbPath := filepath.Join(cacheDir, "secchain.db")
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open cache database: %w", err)
@@ -282,5 +282,5 @@ type CacheStats struct {
 // getCacheDir returns the cache directory path
 func getCacheDir() string {
 	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".cache", "depsec")
+	return filepath.Join(home, ".cache", "secchain")
 }

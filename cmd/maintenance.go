@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/YsfDev1/DepSec/scanner"
+	"github.com/YsfDev1/SecChain/scanner"
 	"github.com/spf13/cobra"
 )
 
@@ -40,10 +40,10 @@ var UpdateRulesCmd = &cobra.Command{
 
 var VersionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Show DepSec version",
-	Long:  `Display the current version of DepSec`,
+	Short: "Show SecChain version",
+	Long:  `Display the current version of SecChain`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("DepSec CLI Security Tool")
+		fmt.Println("SecChain CLI Security Tool")
 		fmt.Println("Version: 0.1.0")
 		fmt.Println("Build: development")
 		fmt.Println("\n🛡️  Protecting your dependencies from supply chain attacks")

@@ -13,7 +13,7 @@
 
 For critical security vulnerabilities, please email us immediately:
 
-**📧 Email:** security@depsec.dev
+**📧 Email:** security@secchain.dev
 
 ### 📋 What to Include
 
@@ -33,7 +33,7 @@ For critical security vulnerabilities, please email us immediately:
 
 ### 🔄 Disclosure Process
 
-1. **Report**: Vulnerability reported to security@depsec.dev
+1. **Report**: Vulnerability reported to security@secchain.dev
 2. **Acknowledgment**: We acknowledge receipt within 48 hours
 3. **Assessment**: We assess the impact and develop a patch
 4. **Patch**: We create and test a security patch
@@ -42,10 +42,10 @@ For critical security vulnerabilities, please email us immediately:
 
 ## 🎯 Security Scope
 
-DepSec is designed with security as a primary consideration:
+SecChain is designed with security as a primary consideration:
 
 ### ✅ In Scope
-- Vulnerabilities in DepSec's core scanning logic
+- Vulnerabilities in SecChain's core scanning logic
 - Security issues with CVE data processing
 - Problems with sandbox isolation
 - Issues with configuration file handling
@@ -64,7 +64,7 @@ DepSec is designed with security as a primary consideration:
 
 1. **Verify Downloads**: Always verify binary checksums
 2. **Use Official Sources**: Download only from official releases
-3. **Keep Updated**: Use the latest version of DepSec
+3. **Keep Updated**: Use the latest version of SecChain
 4. **Review Configuration**: Understand your security settings
 5. **Monitor Logs**: Regularly check scan logs
 
@@ -118,14 +118,14 @@ DepSec is designed with security as a primary consideration:
 ## 📞 Contact Information
 
 ### Security Team
-- **Email**: security@depsec.dev
+- **Email**: security@secchain.dev
 - **PGP Key**: Available on request
 - **Response Time**: Within 48 hours
 
 ### General Inquiries
 - **GitHub Issues**: Non-security bugs and features
 - **GitHub Discussions**: General questions and community
-- **Email**: hello@depsec.dev
+- **Email**: hello@secchain.dev
 
 ## 📜 Security History
 
@@ -149,11 +149,11 @@ DepSec is designed with security as a primary consideration:
 
 ## 🛡️ Commitment to Security
 
-DepSec is committed to maintaining the highest security standards. We believe in:
+SecChain is committed to maintaining the highest security standards. We believe in:
 
 - **Transparency**: Open and honest communication about security
 - **Responsiveness**: Quick action on security issues
 - **Collaboration**: Working with the security community
 - **Education**: Helping users understand security best practices
 
-Thank you for helping keep DepSec secure! 🚀
+Thank you for helping keep SecChain secure! 🚀

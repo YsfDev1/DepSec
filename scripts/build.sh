@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# DepSec Build Script
-# This script builds DepSec for multiple platforms and creates release artifacts
+# SecChain Build Script
+# This script builds SecChain for multiple platforms and creates release artifacts
 
 set -e
 
@@ -44,7 +44,7 @@ check_go() {
 clean_build() {
     print_status "Cleaning previous builds..."
     rm -rf release/
-    rm -f depsec*
+    rm -f secchain*
     mkdir -p release
 }
 
@@ -69,9 +69,9 @@ build_platforms() {
         
         # Set binary name
         if [ "$GOOS" = "windows" ]; then
-            BINARY="depsec-${GOOS}-${GOARCH}.exe"
+            BINARY="secchain-${GOOS}-${GOARCH}.exe"
         else
-            BINARY="depsec-${GOOS}-${GOARCH}"
+            BINARY="secchain-${GOOS}-${GOARCH}"
         fi
         
         # Build
@@ -93,7 +93,7 @@ create_archives() {
     cd release
     
     # Create tar.gz for Unix systems
-    for binary in depsec-linux-* depsec-darwin-*; do
+    for binary in secchain-linux-* secchain-darwin-*; do
         if [ -f "$binary" ]; then
             print_status "Creating ${binary}.tar.gz..."
             tar -czf "${binary}.tar.gz" "$binary"
@@ -102,7 +102,7 @@ create_archives() {
     done
     
     # Create zip for Windows
-    for binary in depsec-windows-*.exe; do
+    for binary in secchain-windows-*.exe; do
         if [ -f "$binary" ]; then
             print_status "Creating ${binary%.exe}.zip..."
             zip "${binary%.exe}.zip" "$binary"
@@ -145,13 +145,13 @@ run_tests() {
 # Build local binary
 build_local() {
     print_status "Building local binary..."
-    go build -o depsec main.go
-    print_success "Built local binary: depsec"
+    go build -o cc main.go
+    print_success "Built local binary: cc"
 }
 
 # Show help
 show_help() {
-    echo "DepSec Build Script"
+    echo "SecChain Build Script"
     echo ""
     echo "Usage: $0 [options]"
     echo ""

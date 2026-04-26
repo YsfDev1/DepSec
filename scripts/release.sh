@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# DepSec Release Script
+# SecChain Release Script
 # Automated release preparation and publishing
 
 set -e
@@ -30,7 +30,7 @@ print_error() {
 }
 
 # Configuration
-GITHUB_REPO="your-org/DepSec"
+GITHUB_REPO="YsfDev1/SecChain"
 RELEASE_NOTES_FILE="RELEASE_NOTES.md"
 
 # Check prerequisites
@@ -159,7 +159,7 @@ generate_release_notes() {
     
     # Create release notes
     cat > "$RELEASE_NOTES_FILE" << EOF
-## DepSec $version
+## SecChain $version
 
 ### 🚀 Installation
 
@@ -168,32 +168,32 @@ Download the appropriate binary for your platform:
 
 \`\`\`bash
 # Linux (AMD64)
-curl -L -o depsec "https://github.com/$GITHUB_REPO/releases/download/$version/depsec-linux-amd64.tar.gz"
-tar -xzf depsec-linux-amd64.tar.gz
-chmod +x depsec
-sudo mv depsec /usr/local/bin/
+curl -L -o secchain "https://github.com/$GITHUB_REPO/releases/download/$version/secchain-linux-amd64.tar.gz"
+tar -xzf secchain-linux-amd64.tar.gz
+chmod +x secchain
+sudo mv secchain /usr/local/bin/
 
 # macOS (Intel)
-curl -L -o depsec "https://github.com/$GITHUB_REPO/releases/download/$version/depsec-darwin-amd64.tar.gz"
-tar -xzf depsec-darwin-amd64.tar.gz
-chmod +x depsec
-sudo mv depsec /usr/local/bin/
+curl -L -o secchain "https://github.com/$GITHUB_REPO/releases/download/$version/secchain-darwin-amd64.tar.gz"
+tar -xzf secchain-darwin-amd64.tar.gz
+chmod +x secchain
+sudo mv secchain /usr/local/bin/
 
 # macOS (Apple Silicon)
-curl -L -o depsec "https://github.com/$GITHUB_REPO/releases/download/$version/depsec-darwin-arm64.tar.gz"
-tar -xzf depsec-darwin-arm64.tar.gz
-chmod +x depsec
-sudo mv depsec /usr/local/bin/
+curl -L -o secchain "https://github.com/$GITHUB_REPO/releases/download/$version/secchain-darwin-arm64.tar.gz"
+tar -xzf secchain-darwin-arm64.tar.gz
+chmod +x secchain
+sudo mv secchain /usr/local/bin/
 
 # Windows (AMD64)
-curl -L -o depsec.zip "https://github.com/$GITHUB_REPO/releases/download/$version/depsec-windows-amd64.zip"
-unzip depsec.zip
-move depsec.exe C:\Program Files\DepSec\
+curl -L -o secchain.zip "https://github.com/$GITHUB_REPO/releases/download/$version/secchain-windows-amd64.zip"
+unzip secchain.zip
+move secchain.exe C:\Program Files\SecChain\
 \`\`\`
 
 #### Go Install
 \`\`\`bash
-go install github.com/$GITHUB_REPO/cmd/depsec@$version
+go install github.com/$GITHUB_REPO/cmd/secchain@$version
 \`\`\`
 
 ### 📋 What's Changed
@@ -215,7 +215,7 @@ sha256sum -c SHA256SUMS
 
 ---
 
-🛡️ *DepSec - Protecting your dependencies from supply chain attacks*
+🛡️ *SecChain - Protecting your dependencies from supply chain attacks*
 EOF
     
     print_success "Release notes generated"
@@ -249,7 +249,7 @@ create_github_release() {
     
     # Create release using gh CLI
     gh release create "v$version" \
-        --title "DepSec $version" \
+        --title "SecChain $version" \
         --notes-file "$RELEASE_NOTES_FILE" \
         --latest \
         release/*
@@ -266,7 +266,7 @@ cleanup() {
 
 # Show help
 show_help() {
-    echo "DepSec Release Script"
+    echo "SecChain Release Script"
     echo ""
     echo "Usage: $0 [version-type]"
     echo ""
@@ -300,7 +300,7 @@ main() {
         exit 0
     fi
     
-    echo "🚀 DepSec Release Process"
+    echo "🚀 SecChain Release Process"
     echo "======================="
     echo ""
     

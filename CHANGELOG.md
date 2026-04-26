@@ -1,11 +1,17 @@
 # Changelog
 
-All notable changes to DepSec will be documented in this file.
+All notable changes to SecChain will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Changed
+- Project renamed from DepSec to SecChain
+- CLI binary renamed from secchain to cc
+- Updated all documentation and references to use new naming
+- Updated GitHub repository URLs to YsfDev1/SecChain
 
 ### Added
 - GitHub Actions CI/CD pipeline
@@ -13,11 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issue and PR templates
 - Security policy and vulnerability reporting process
 - Dependabot configuration for dependency management
-
-### Changed
-- Updated README with GitHub-friendly formatting
-- Improved project structure for better maintainability
-- Enhanced documentation with detailed guides
 
 ### Security
 - Added security scanning workflows
@@ -27,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2024-04-25
 
 ### Added
-- Initial release of DepSec CLI security tool
+- Initial release of SecChain CLI security tool
 - Real CVE detection using OSV API integration
 - Package metadata analysis for Node.js and Python
 - Multi-ecosystem support (Node.js, Python, Rust, Go, Ruby)
@@ -119,7 +120,7 @@ If you were using development builds before v0.1.0:
 
 1. **Configuration**: Configuration format is stable
 2. **Commands**: All commands remain the same
-3. **Cache**: Cache may need to be cleared (`rm -rf ~/.cache/depsec`)
+3. **Cache**: Cache may need to be cleared (`rm -rf ~/.cache/secchain`)
 4. **Binary**: Replace with official release binary
 
 ### Breaking Changes
@@ -158,10 +159,10 @@ If you were using development builds before v0.1.0:
 ## Need Help?
 
 - 📖 [Documentation](docs/README.md)
-- 🐛 [Report Issues](https://github.com/your-org/DepSec/issues)
-- 💬 [Discussions](https://github.com/your-org/DepSec/discussions)
-- 🔒 [Security Issues](mailto:security@depsec.dev)
+- 🐛 [Report Issues](https://github.com/YsfDev1/SecChain/issues)
+- 💬 [Discussions](https://github.com/YsfDev1/SecChain/discussions)
+- 🔒 [Security Issues](mailto:security@secchain.dev)
 
 ---
 
-**🛡️ DepSec - Protecting your dependencies from supply chain attacks**
+**🛡️ SecChain - Protecting your dependencies from supply chain attacks**

@@ -1,6 +1,6 @@
-# Contributing to DepSec
+# Contributing to SecChain
 
-Thank you for your interest in contributing to DepSec! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to SecChain! This document provides guidelines and information for contributors.
 
 ## 🚀 Quick Start
 
@@ -23,14 +23,14 @@ Thank you for your interest in contributing to DepSec! This document provides gu
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/DepSec.git
-cd DepSec
+git clone https://github.com/YsfDev1/SecChain.git
+cd SecChain
 
 # Install dependencies
 go mod tidy
 
 # Build the project
-go build -o depsec main.go
+go build -o cc main.go
 
 # Run tests
 go test ./...
@@ -62,7 +62,7 @@ We follow the standard Go coding conventions:
 ## 🏗️ Project Structure
 
 ```
-DepSec/
+SecChain/
 ├── cmd/           # CLI commands
 ├── scanner/       # Core scanning logic
 ├── config/        # Configuration management
@@ -162,4 +162,4 @@ Releases are automated through GitHub Actions:
 - Check existing issues and documentation
 - Join our community discussions
 
-Thank you for contributing to DepSec! 🛡️
+Thank you for contributing to SecChain! 🛡️

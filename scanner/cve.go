@@ -186,7 +186,7 @@ func (c *CVEChecker) makeOSVRequest(ctx context.Context, query []byte) (*http.Re
 		return nil, fmt.Errorf("failed to create OSV request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "DepSec/0.1.0")
+	req.Header.Set("User-Agent", "SecChain/0.1.0")
 
 	client := &http.Client{Timeout: 30 * time.Second}
 	return client.Do(req)
@@ -410,5 +410,5 @@ func (c *CVEChecker) Close() error {
 // Helper function to get cache directory
 func getCacheDir() string {
 	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".cache", "depsec")
+	return filepath.Join(home, ".cache", "secchain")
 }

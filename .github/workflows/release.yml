@@ -61,9 +61,9 @@ jobs:
           echo "Building for $GOOS/$GOARCH"
           
           if [ "$GOOS" = "windows" ]; then
-            GOOS=$GOOS GOARCH=$GOARCH go build -o release/depsec-${GOOS}-${GOARCH}.exe main.go
+            GOOS=$GOOS GOARCH=$GOARCH go build -o release/secchain-${GOOS}-${GOARCH}.exe main.go
           else
-            GOOS=$GOOS GOARCH=$GOARCH go build -o release/depsec-${GOOS}-${GOARCH} main.go
+            GOOS=$GOOS GOARCH=$GOARCH go build -o release/secchain-${GOOS}-${GOARCH} main.go
           fi
         done
 
@@ -72,7 +72,7 @@ jobs:
         cd release
         
         # Create tar.gz for Unix systems
-        for binary in depsec-linux-* depsec-darwin-*; do
+        for binary in secchain-linux-* secchain-darwin-*; do
           if [ -f "$binary" ]; then
             tar -czf "${binary}.tar.gz" "$binary"
             rm "$binary"
@@ -80,7 +80,7 @@ jobs:
         done
         
         # Create zip for Windows
-        for binary in depsec-windows-*.exe; do
+        for binary in secchain-windows-*.exe; do
           if [ -f "$binary" ]; then
             zip "${binary%.exe}.zip" "$binary"
             rm "$binary"
@@ -96,7 +96,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         body: |
-          ## DepSec ${{ github.ref_name }}
+          ## SecChain ${{ github.ref_name }}
           
           ### 🚀 Installation
           
@@ -105,32 +105,32 @@ jobs:
           
           ```bash
           # Linux (AMD64)
-          curl -L -o depsec "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/depsec-linux-amd64.tar.gz"
-          tar -xzf depsec-linux-amd64.tar.gz
-          chmod +x depsec
-          sudo mv depsec /usr/local/bin/
+          curl -L -o secchain.tar.gz "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/secchain-linux-amd64.tar.gz"
+          tar -xzf secchain.tar.gz
+          chmod +x cc
+          sudo mv cc /usr/local/bin/
           
           # macOS (Intel)
-          curl -L -o depsec "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/depsec-darwin-amd64.tar.gz"
-          tar -xzf depsec-darwin-amd64.tar.gz
-          chmod +x depsec
-          sudo mv depsec /usr/local/bin/
+          curl -L -o secchain.tar.gz "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/secchain-darwin-amd64.tar.gz"
+          tar -xzf secchain.tar.gz
+          chmod +x cc
+          sudo mv cc /usr/local/bin/
           
           # macOS (Apple Silicon)
-          curl -L -o depsec "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/depsec-darwin-arm64.tar.gz"
-          tar -xzf depsec-darwin-arm64.tar.gz
-          chmod +x depsec
-          sudo mv depsec /usr/local/bin/
+          curl -L -o secchain.tar.gz "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/secchain-darwin-arm64.tar.gz"
+          tar -xzf secchain.tar.gz
+          chmod +x cc
+          sudo mv cc /usr/local/bin/
           
           # Windows (AMD64)
-          curl -L -o depsec.zip "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/depsec-windows-amd64.zip"
-          unzip depsec.zip
-          move depsec.exe C:\Program Files\DepSec\
+          curl -L -o secchain.zip "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/secchain-windows-amd64.zip"
+          unzip secchain.zip
+          move cc.exe C:\Program Files\SecChain\
           ```
           
           #### Go Install
           ```bash
-          go install github.com/${{ github.repository }}/cmd/depsec@${{ github.ref_name }}
+          go install github.com/${{ github.repository }}/cmd/secchain@${{ github.ref_name }}
           ```
           
           ### 📋 What's Changed
@@ -152,7 +152,7 @@ jobs:
           
           ---
           
-          🛡️ *DepSec - Protecting your dependencies from supply chain attacks*
+          🛡️ *SecChain - Protecting your dependencies from supply chain attacks*
         files: |
           release/*
         draft: false

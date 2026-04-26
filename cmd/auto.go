@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/YsfDev1/DepSec/hooks"
+	"github.com/YsfDev1/SecChain/hooks"
 	"github.com/spf13/cobra"
 )
 
@@ -61,7 +61,7 @@ var statusCmd = &cobra.Command{
 		shellManager := hooks.NewShellManager()
 		status := shellManager.GetStatus()
 
-		fmt.Println("DepSec Auto-Scan Status:")
+		fmt.Println("SecChain Auto-Scan Status:")
 		fmt.Printf("  Enabled: %t\n", status["enabled"])
 		fmt.Printf("  Shell: %s\n", status["shell"])
 		fmt.Printf("  Config: %s\n", status["config"])

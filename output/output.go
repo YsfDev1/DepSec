@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/YsfDev1/DepSec/scanner"
+	"github.com/YsfDev1/SecChain/scanner"
 )
 
 // Formatter handles different output formats for scan results
@@ -133,7 +133,7 @@ func (f *Formatter) FormatRisk(result *scanner.ScanResult, finding *scanner.Find
 func (f *Formatter) FormatStatus(status map[string]interface{}) string {
 	var builder strings.Builder
 
-	fmt.Fprintf(&builder, "DepSec Status:\n")
+	fmt.Fprintf(&builder, "SecChain Status:\n")
 	fmt.Fprintf(&builder, "  Mode: %s\n", status["mode"])
 	fmt.Fprintf(&builder, "  Min Severity: %s\n", status["min_severity"])
 	fmt.Fprintf(&builder, "  Offline: %t\n", status["offline"])
@@ -164,7 +164,7 @@ func (f *Formatter) FormatStatus(status map[string]interface{}) string {
 func (f *Formatter) FormatDoctor(checks []HealthCheck) string {
 	var builder strings.Builder
 
-	fmt.Fprintf(&builder, "DepSec Health Check:\n\n")
+	fmt.Fprintf(&builder, "SecChain Health Check:\n\n")
 
 	for _, check := range checks {
 		status := "✅"

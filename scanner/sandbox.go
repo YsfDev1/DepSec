@@ -39,7 +39,7 @@ type SandboxScanner struct {
 // NewSandboxScanner creates a new sandbox scanner
 func NewSandboxScanner() *SandboxScanner {
 	return &SandboxScanner{
-		imageName:    "depsec/scanner:latest",
+		imageName:    "secchain/scanner:latest",
 		dockerConfig: DefaultDockerConfig(),
 	}
 }

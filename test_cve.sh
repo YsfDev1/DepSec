@@ -10,9 +10,9 @@ if ! command -v go &> /dev/null; then
 fi
 
 # Build the project
-echo "🔨 Building DepSec..."
-cd /home/yusuf/Belgeler/DepSec
-go build -o depsec main.go
+echo "🔨 Building SecChain..."
+cd /home/yusuf/Belgeler/SecChain
+go build -o secchain main.go
 
 if [ $? -ne 0 ]; then
     echo "❌ Build failed"
@@ -27,7 +27,7 @@ echo "🧪 Testing CVE scanning with lodash@4.17.15 (known vulnerable)..."
 echo "This should return CVE-2021-23337 and other vulnerabilities"
 echo ""
 
-./depsec scan --pkg lodash --version 4.17.15 --ecosystem node --format table
+./cc scan --pkg lodash --version 4.17.15 --ecosystem node --format table
 
 echo ""
 echo "🎯 Expected results:"

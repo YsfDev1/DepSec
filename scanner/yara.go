@@ -114,7 +114,7 @@ func (y *YARAScanner) scanMaliciousSignatures(pkg, version string) *Finding {
 func (y *YARAScanner) createDefaultRules() error {
 	rulesFile := filepath.Join(y.rulesPath, "default.yar")
 
-	rules := `// DepSec Default YARA Rules
+	rules := `// SecChain Default YARA Rules
 // These rules detect common malicious patterns in package code
 
 rule Base64_Blob {
@@ -255,5 +255,5 @@ func (y *YARAScanner) UpdateRules() error {
 // Helper function to get config directory
 func getConfigDir() string {
 	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".config", "depsec")
+	return filepath.Join(home, ".config", "secchain")
 }

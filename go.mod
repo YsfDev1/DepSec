@@ -1,4 +1,4 @@
-module github.com/YsfDev1/DepSec
+module github.com/YsfDev1/SecChain
 
 go 1.21
 

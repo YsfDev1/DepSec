@@ -24,7 +24,7 @@ A clear and concise description of what you expected to happen.
 A clear and concise description of what actually happened.
 
 ## 🖥️ Environment
-- **DepSec Version**: (e.g., v0.1.0)
+- **SecChain Version**: (e.g., v0.1.0)
 - **Go Version**: (e.g., 1.22.0)
 - **Operating System**: (e.g., Ubuntu 22.04, macOS 13.0, Windows 11)
 - **Docker Version**: (if applicable)
@@ -33,7 +33,7 @@ A clear and concise description of what actually happened.
 ## 📋 Command Used
 ```bash
 # Paste the exact command you ran
-depsec scan --pkg example --version 1.0.0 --ecosystem node
+cc scan --pkg example --version 1.0.0 --ecosystem node
 ```
 
 ## 📄 Error Output
@@ -50,7 +50,7 @@ If you've done any debugging, please share what you found:
 - [ ] I searched existing issues for similar problems
 - [ ] I checked the documentation
 - [ ] I tried running with --verbose flag
-- [ ] I checked the logs in ~/.cache/depsec/
+- [ ] I checked the logs in ~/.cache/secchain/
 
 ## 📎 Attachments
 Add any other attachments, screenshots, or logs that help explain the problem.

@@ -1,6 +1,6 @@
-# DepSec Documentation
+# SecChain Documentation
 
-Welcome to the DepSec documentation! Here you'll find comprehensive guides for using and contributing to DepSec.
+Welcome to the SecChain documentation! Here you'll find comprehensive guides for using and contributing to SecChain.
 
 ## 📚 Table of Contents
 
@@ -15,9 +15,9 @@ Welcome to the DepSec documentation! Here you'll find comprehensive guides for u
 
 ## 🚀 Getting Started
 
-### What is DepSec?
+### What is SecChain?
 
-DepSec is a CLI security tool that automatically scans packages and their dependencies in an isolated sandbox before they are installed on the host system. It provides layered security scanning including:
+SecChain is a CLI security tool that automatically scans packages and their dependencies in an isolated sandbox before they are installed on the host system. It provides layered security scanning including:
 
 - **CVE Detection** - Real-time vulnerability scanning using OSV database
 - **Metadata Analysis** - Package registry metadata anomaly detection
@@ -28,18 +28,18 @@ DepSec is a CLI security tool that automatically scans packages and their depend
 ### Quick Start
 
 ```bash
-# Install DepSec
-curl -L https://github.com/your-org/DepSec/releases/latest/download/depsec-linux-amd64.tar.gz | tar -xz
-sudo mv depsec /usr/local/bin/
+# Install SecChain
+curl -L https://github.com/YsfDev1/SecChain/releases/latest/download/secchain-linux-amd64.tar.gz | tar -xz
+sudo mv secchain /usr/local/bin/
 
 # Scan a package
-depsec scan --pkg lodash --version 4.17.15 --ecosystem node
+cc scan --pkg lodash --version 4.17.15 --ecosystem node
 
 # Enable auto-scan
-depsec auto enable
+cc auto enable
 
 # Check system health
-depsec doctor
+cc doctor
 ```
 
 ## 🔧 Installation
@@ -48,53 +48,53 @@ depsec doctor
 
 #### Linux (AMD64)
 ```bash
-curl -L -o depsec.tar.gz "https://github.com/your-org/DepSec/releases/latest/download/depsec-linux-amd64.tar.gz"
-tar -xzf depsec.tar.gz
-chmod +x depsec
-sudo mv depsec /usr/local/bin/
+curl -L -o secchain.tar.gz "https://github.com/YsfDev1/SecChain/releases/latest/download/secchain-linux-amd64.tar.gz"
+tar -xzf secchain.tar.gz
+chmod +x secchain
+sudo mv secchain /usr/local/bin/
 ```
 
 #### macOS (Intel)
 ```bash
-curl -L -o depsec.tar.gz "https://github.com/your-org/DepSec/releases/latest/download/depsec-darwin-amd64.tar.gz"
-tar -xzf depsec.tar.gz
-chmod +x depsec
-sudo mv depsec /usr/local/bin/
+curl -L -o secchain.tar.gz "https://github.com/YsfDev1/SecChain/releases/latest/download/secchain-darwin-amd64.tar.gz"
+tar -xzf secchain.tar.gz
+chmod +x secchain
+sudo mv secchain /usr/local/bin/
 ```
 
 #### macOS (Apple Silicon)
 ```bash
-curl -L -o depsec.tar.gz "https://github.com/your-org/DepSec/releases/latest/download/depsec-darwin-arm64.tar.gz"
-tar -xzf depsec.tar.gz
-chmod +x depsec
-sudo mv depsec /usr/local/bin/
+curl -L -o secchain.tar.gz "https://github.com/YsfDev1/SecChain/releases/latest/download/secchain-darwin-arm64.tar.gz"
+tar -xzf secchain.tar.gz
+chmod +x secchain
+sudo mv secchain /usr/local/bin/
 ```
 
 #### Windows (AMD64)
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/your-org/DepSec/releases/latest/download/depsec-windows-amd64.zip" -OutFile "depsec.zip"
-Expand-Archive -Path "depsec.zip" -DestinationPath "."
-Move-Item "depsec.exe" -Destination "C:\Program Files\DepSec\"
+Invoke-WebRequest -Uri "https://github.com/YsfDev1/SecChain/releases/latest/download/secchain-windows-amd64.zip" -OutFile "secchain.zip"
+Expand-Archive -Path "secchain.zip" -DestinationPath "."
+Move-Item "secchain.exe" -Destination "C:\Program Files\SecChain\"
 ```
 
 ### Go Install
 
 ```bash
-go install github.com/your-org/DepSec/cmd/depsec@latest
+go install github.com/YsfDev1/SecChain/cmd/secchain@latest
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/your-org/DepSec.git
-cd DepSec
-go build -o depsec main.go
-sudo mv depsec /usr/local/bin/
+git clone https://github.com/YsfDev1/SecChain.git
+cd SecChain
+go build -o secchain main.go
+sudo mv secchain /usr/local/bin/
 ```
 
 ## ⚙️ Configuration
 
-DepSec uses a TOML configuration file located at `~/.config/depsec/config.toml`.
+SecChain uses a TOML configuration file located at `~/.config/secchain/config.toml`.
 
 ### Default Configuration
 
@@ -131,15 +131,15 @@ verbose = false                 # Verbose output
 
 ```bash
 # Show current configuration
-depsec config show
+cc config show
 
 # Set configuration values
-depsec config set mode strict
-depsec config set min_severity high
-depsec config set offline true
+cc config set mode strict
+cc config set min_severity high
+cc config set offline true
 
 # Reset to defaults
-depsec config reset
+cc config reset
 ```
 
 ## 📋 Commands
@@ -148,108 +148,108 @@ depsec config reset
 
 #### Scan a Package
 ```bash
-depsec scan --pkg <package> --version <version> --ecosystem <ecosystem>
+cc scan --pkg <package> --version <version> --ecosystem <ecosystem>
 ```
 
 **Examples:**
 ```bash
 # Scan a specific version
-depsec scan --pkg lodash --version 4.17.15 --ecosystem node
+cc scan --pkg lodash --version 4.17.15 --ecosystem node
 
 # Scan latest version
-depsec scan --pkg express --ecosystem node
+cc scan --pkg express --ecosystem node
 
 # Scan with different output format
-depsec scan --pkg requests --ecosystem python --format json
+cc scan --pkg requests --ecosystem python --format json
 
 # Scan in strict mode
-depsec scan --pkg react --ecosystem node --strict
+cc scan --pkg react --ecosystem node --strict
 ```
 
 #### Scan a Project
 ```bash
-depsec scan /path/to/project
+cc scan /path/to/project
 ```
 
 ### Auto-Scan Commands
 
 #### Enable Auto-Scan
 ```bash
-depsec auto enable
+cc auto enable
 ```
 
 This injects shell hooks that automatically scan packages before installation.
 
 #### Disable Auto-Scan
 ```bash
-depsec auto disable
+cc auto disable
 ```
 
 #### Check Status
 ```bash
-depsec auto status
+cc auto status
 ```
 
 ### Configuration Commands
 
 #### Show Configuration
 ```bash
-depsec config show
+cc config show
 ```
 
 #### Set Configuration
 ```bash
-depsec config set <key> <value>
+cc config set <key> <value>
 ```
 
 #### Reset Configuration
 ```bash
-depsec config reset
+cc config reset
 ```
 
 ### Maintenance Commands
 
 #### System Health Check
 ```bash
-depsec doctor
+cc doctor
 ```
 
 #### Update Rules and Cache
 ```bash
-depsec update-rules
+cc update-rules
 ```
 
 #### Show Version
 ```bash
-depsec version
+cc version
 ```
 
 ### Report Commands
 
 #### Show Last Scan Report
 ```bash
-depsec report
+cc report
 ```
 
 #### Show Scan History
 ```bash
-depsec report --history
+cc report --history
 ```
 
 #### Show Package Report
 ```bash
-depsec report --pkg lodash
+cc report --pkg lodash
 ```
 
 ## 🔍 Security Scanning
 
 ### CVE Detection
 
-DepSec queries the OSV (Open Source Vulnerability) database for known vulnerabilities:
+SecChain queries the OSV (Open Source Vulnerability) database for known vulnerabilities:
 
 ```bash
 # CVE scanning example
-depsec scan --pkg lodash --version 4.17.15 --ecosystem node
+cc scan --pkg lodash --version 4.17.15 --ecosystem node
 
 # Output example
 PACKAGE  VERSION  ECOSYSTEM  SEVERITY  LAYER  REASON
@@ -259,7 +259,7 @@ lodash   4.17.15  node       MEDIUM    CVE    CVE-2022-2879: Regular Expression 
 
 ### Metadata Analysis
 
-DepSec analyzes package metadata for anomalies:
+SecChain analyzes package metadata for anomalies:
 
 - **Publish Date Analysis** - Identifies suspiciously new or old packages
 - **Typosquatting Detection** - Detects packages with similar names to popular packages
@@ -267,7 +267,7 @@ DepSec analyzes package metadata for anomalies:
 
 ### Sandbox Scanning
 
-When Docker is available, DepSec can scan packages in an isolated container:
+When Docker is available, SecChain can scan packages in an isolated container:
 
 - **Network Monitoring** - Detects unauthorized network calls
 - **File System Monitoring** - Monitors file access patterns
@@ -276,14 +276,14 @@ When Docker is available, DepSec can scan packages in an isolated container:
 
 ### YARA Rules
 
-DepSec uses YARA rules for binary pattern matching:
+SecChain uses YARA rules for binary pattern matching:
 
 ```bash
 # Update YARA rules
-depsec update-rules
+cc update-rules
 
 # Custom rules location
-~/.config/depsec/rules/
+~/.config/secchain/rules/
 ```
 
 ## 🛠️ Development
@@ -292,14 +292,14 @@ depsec update-rules
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/DepSec.git
-cd DepSec
+git clone https://github.com/YsfDev1/SecChain.git
+cd SecChain
 
 # Install dependencies
 go mod tidy
 
 # Build the project
-go build -o depsec main.go
+go build -o secchain main.go
 
 # Run tests
 go test ./...
@@ -311,7 +311,7 @@ go test ./...
 ### Project Structure
 
 ```
-DepSec/
+SecChain/
 ├── cmd/           # CLI commands
 ├── scanner/       # Core scanning logic
 ├── config/        # Configuration management
@@ -370,7 +370,7 @@ type Finding struct {
 #### Docker Not Available
 ```bash
 # Check Docker status
-depsec doctor
+cc doctor
 
 # Install Docker
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -387,39 +387,39 @@ brew install clamav       # macOS
 #### Permission Issues
 ```bash
 # Check permissions
-ls -la ~/.config/depsec/
-ls -la ~/.cache/depsec/
+ls -la ~/.config/secchain/
+ls -la ~/.cache/secchain/
 
 # Fix permissions
-chmod 755 ~/.config/depsec/
-chmod 755 ~/.cache/depsec/
+chmod 755 ~/.config/secchain/
+chmod 755 ~/.cache/secchain/
 ```
 
 #### Network Issues
 ```bash
 # Use offline mode
-depsec scan --pkg example --ecosystem node --offline
+cc scan --pkg example --ecosystem node --offline
 
 # Check network connectivity
-depsec doctor
+cc doctor
 ```
 
 ### Debug Mode
 
 ```bash
 # Enable verbose output
-depsec scan --pkg example --ecosystem node --verbose
+cc scan --pkg example --ecosystem node --verbose
 
 # Check logs
-tail -f ~/.cache/depsec/depsec.log
+tail -f ~/.cache/secchain/secchain.log
 ```
 
 ### Getting Help
 
-- [GitHub Issues](https://github.com/your-org/DepSec/issues)
-- [GitHub Discussions](https://github.com/your-org/DepSec/discussions)
-- [Security Issues](mailto:security@depsec.dev)
+- [GitHub Issues](https://github.com/YsfDev1/SecChain/issues)
+- [GitHub Discussions](https://github.com/YsfDev1/SecChain/discussions)
+- [Security Issues](mailto:security@secchain.dev)
 
 ---
 
-🛡️ **DepSec - Protecting your dependencies from supply chain attacks**
+🛡️ **SecChain - Protecting your dependencies from supply chain attacks**

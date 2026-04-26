@@ -8,7 +8,7 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-// Config represents DepSec configuration
+// Config represents SecChain configuration
 type Config struct {
 	// General settings
 	Mode        string `toml:"mode"`         // interactive, strict, log
@@ -122,7 +122,7 @@ func (m *Manager) getDefaultConfig() *Config {
 			Timeout int    `toml:"timeout"`
 		}{
 			Enabled: true,
-			Image:   "depsec/scanner:latest",
+			Image:   "secchain/scanner:latest",
 			Timeout: 300,
 		},
 		ClamAV: struct {
@@ -269,5 +269,5 @@ func contains(slice []string, item string) bool {
 // getConfigDir returns the config directory path
 func getConfigDir() string {
 	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".config", "depsec")
+	return filepath.Join(home, ".config", "secchain")
 }

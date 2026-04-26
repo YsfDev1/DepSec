@@ -5,14 +5,14 @@ import (
 	"os"
 	"strings"
 
-	"github.com/YsfDev1/DepSec/config"
+	"github.com/YsfDev1/SecChain/config"
 	"github.com/spf13/cobra"
 )
 
 var ConfigCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Manage configuration",
-	Long:  `View and modify DepSec configuration settings`,
+	Long:  `View and modify SecChain configuration settings`,
 }
 
 var showCmd = &cobra.Command{
@@ -28,7 +28,7 @@ var showCmd = &cobra.Command{
 
 		config := configManager.Get()
 
-		fmt.Println("DepSec Configuration:")
+		fmt.Println("SecChain Configuration:")
 		fmt.Printf("  Mode: %s\n", config.Mode)
 		fmt.Printf("  Min Severity: %s\n", config.MinSeverity)
 		fmt.Printf("  Offline: %t\n", config.Offline)
