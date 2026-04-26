@@ -6,9 +6,9 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/DepSec/config"
-	"github.com/DepSec/hooks"
-	"github.com/DepSec/output"
+	"github.com/YsfDev1/DepSec/config"
+	"github.com/YsfDev1/DepSec/hooks"
+	"github.com/YsfDev1/DepSec/output"
 	"github.com/spf13/cobra"
 )
 

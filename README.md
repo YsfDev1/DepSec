@@ -1,23 +1,19 @@
-# 🛡️ DepSec - CLI Security Tool for Package Scanning
+# DepSec - CLI Security Tool for Package Scanning
 
-[![CI](https://github.com/YsfDev1/DepSec/actions/workflows/go.yml/badge.svg)](https://github.com/YsfDev1/DepSec/actions/workflows/ci.yml)
-[![Release](https://github.com/YsfDev1/DepSec/actions/workflows/release.yml/badge.svg)](https://github.com/YsfDev1/DepSec/actions/workflows/release.yml)
+[![Release](https://github.com/YsfDev1/DepSec/workflows/Release/badge.svg)](https://github.com/YsfDev1/DepSec/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/YsfDev1/DepSec)](https://goreportcard.com/report/github.com/YsfDev1/DepSec)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white)](https://go.dev)
 
 > **DepSec is a CLI security tool that automatically scans packages and their dependencies in an isolated sandbox before they are installed on the host system.**
 
-## ✨ Features
+## Features
 
-- 🔍 **Real CVE Detection** - Queries OSV database for actual vulnerabilities
-- 📊 **Metadata Analysis** - Package registry metadata anomaly detection
-- 🐳 **Sandbox Scanning** - Docker-based isolated package analysis
-- 🎯 **YARA Rules** - Custom rule-based binary pattern matching
-- 🦠 **ClamAV Integration** - Antivirus scanning for malicious binaries
-- 🤖 **Auto-Scan** - Shell hooks for automatic package scanning
-- 📋 **Multi-Ecosystem** - Support for Node.js, Python, Rust, Go, Ruby
-- 🎨 **Multiple Formats** - Table, JSON, and minimal output formats
+- **Real CVE Detection** - Queries OSV database for actual vulnerabilities
+- **Metadata Analysis** - Package registry metadata anomaly detection
+- **Auto-Scan** - Shell hooks for automatic package scanning
+- **Multi-Ecosystem** - Support for Node.js, Python, Rust, Go, Ruby
+- **Multiple Formats** - Table, JSON, and minimal output formats
 
 ## 🚀 Quick Start
 
@@ -27,19 +23,19 @@
 
 ```bash
 # Linux (AMD64)
-curl -L -o depsec.tar.gz "https://github.com/your-org/DepSec/releases/latest/download/depsec-linux-amd64.tar.gz"
+curl -L -o depsec.tar.gz "https://github.com/YsfDev1/DepSec/releases/latest/download/depsec-linux-amd64.tar.gz"
 tar -xzf depsec.tar.gz
 chmod +x depsec
 sudo mv depsec /usr/local/bin/
 
 # macOS (Intel)
-curl -L -o depsec.tar.gz "https://github.com/your-org/DepSec/releases/latest/download/depsec-darwin-amd64.tar.gz"
+curl -L -o depsec.tar.gz "https://github.com/YsfDev1/DepSec/releases/latest/download/depsec-darwin-amd64.tar.gz"
 tar -xzf depsec.tar.gz
 chmod +x depsec
 sudo mv depsec /usr/local/bin/
 
 # Windows (AMD64)
-powershell -Command "Invoke-WebRequest -Uri 'https://github.com/your-org/DepSec/releases/latest/download/depsec-windows-amd64.zip' -OutFile 'depsec.zip'; Expand-Archive -Path 'depsec.zip' -DestinationPath '.'; Move-Item 'depsec.exe' -Destination 'C:\Program Files\DepSec\'"
+powershell -Command "Invoke-WebRequest -Uri 'https://github.com/YsfDev1/DepSec/releases/latest/download/depsec-windows-amd64.zip' -OutFile 'depsec.zip'; Expand-Archive -Path 'depsec.zip' -DestinationPath '.'; Move-Item 'depsec.exe' -Destination 'C:\Program Files\DepSec\'"
 ```
 
 #### Go Install
@@ -125,16 +121,10 @@ graph TD
     B --> C[Dependency Resolver]
     B --> D[CVE Scanner]
     B --> E[Metadata Scanner]
-    B --> F[Sandbox Scanner]
-    B --> G[YARA Scanner]
-    B --> H[ClamAV Scanner]
     
     C --> I[Package Registries]
     D --> J[OSV API]
     E --> I
-    F --> K[Docker Container]
-    G --> L[YARA Rules]
-    H --> M[ClamAV Engine]
     
     B --> N[Output Formatter]
     N --> O[Table/JSON/Minimal]
@@ -182,7 +172,7 @@ graph TD
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/DepSec.git
+git clone https://github.com/YsfDev1/DepSec.git
 cd DepSec
 
 # Install dependencies
@@ -279,9 +269,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- 🐛 [Report Bugs](https://github.com/your-org/DepSec/issues)
-- 💡 [Request Features](https://github.com/your-org/DepSec/issues)
-- 💬 [Discussions](https://github.com/your-org/DepSec/discussions)
+- 🐛 [Report Bugs](https://github.com/YsfDev1/DepSec/issues)
+- 💡 [Request Features](https://github.com/YsfDev1/DepSec/issues)
+- 💬 [Discussions](https://github.com/YsfDev1/DepSec/discussions)
 - 📧 [Email Support](mailto:hello@depsec.dev)
 - 🔒 [Security Issues](mailto:security@depsec.dev)
 

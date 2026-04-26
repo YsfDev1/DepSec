@@ -6,19 +6,19 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/DepSec/scanner"
-	"github.com/DepSec/output"
+	"github.com/YsfDev1/DepSec/output"
+	"github.com/YsfDev1/DepSec/scanner"
 	"github.com/spf13/cobra"
 )
 
 var (
-	scanPkg      string
-	scanVersion  string
+	scanPkg       string
+	scanVersion   string
 	scanEcosystem string
-	scanFormat   string
-	scanOffline  bool
-	scanStrict   bool
-	scanLogOnly  bool
+	scanFormat    string
+	scanOffline   bool
+	scanStrict    bool
+	scanLogOnly   bool
 )
 
 var ScanCmd = &cobra.Command{
@@ -28,25 +28,25 @@ var ScanCmd = &cobra.Command{
 Supports multiple ecosystems: node, python, rust, go, ruby`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
-		
+
 		// Initialize scanning pipeline
 		pipeline := scanner.NewPipeline()
-		
+
 		var results []*scanner.ScanResult
 		var err error
-		
+
 		if scanPkg != "" {
 			// Scan specific package
 			if scanVersion == "" {
 				// Try to get latest version (for now use "latest")
 				scanVersion = "latest"
 			}
-			
+
 			if scanEcosystem == "" {
 				fmt.Fprintf(os.Stderr, "Error: --ecosystem is required when scanning a package\n")
 				os.Exit(1)
 			}
-			
+
 			fmt.Printf("Scanning package %s@%s (%s)...\n", scanPkg, scanVersion, scanEcosystem)
 			result, err := pipeline.ScanPackage(ctx, scanPkg, scanVersion, scanEcosystem)
 			if err != nil {
@@ -61,7 +61,7 @@ Supports multiple ecosystems: node, python, rust, go, ruby`,
 				cwd, _ := os.Getwd()
 				projectPath = filepath.Join(cwd, projectPath)
 			}
-			
+
 			fmt.Printf("Scanning project directory: %s\n", projectPath)
 			results, err = pipeline.ScanProject(ctx, projectPath)
 			if err != nil {
@@ -72,7 +72,7 @@ Supports multiple ecosystems: node, python, rust, go, ruby`,
 			fmt.Fprintf(os.Stderr, "Error: Either specify a package with --pkg or provide a project path\n")
 			os.Exit(1)
 		}
-		
+
 		// Format and display results
 		formatter := output.NewFormatter(scanFormat, true, false)
 		output, err := formatter.Format(results)
@@ -80,9 +80,9 @@ Supports multiple ecosystems: node, python, rust, go, ruby`,
 			fmt.Fprintf(os.Stderr, "Error formatting results: %v\n", err)
 			os.Exit(1)
 		}
-		
+
 		fmt.Print(output)
-		
+
 		// Check for risky packages
 		hasRisks := false
 		for _, result := range results {
@@ -91,7 +91,7 @@ Supports multiple ecosystems: node, python, rust, go, ruby`,
 				break
 			}
 		}
-		
+
 		if hasRisks {
 			if scanStrict {
 				fmt.Printf("\n❌ Risks detected and strict mode enabled - aborting\n")

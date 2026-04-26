@@ -3,7 +3,7 @@ package scanner
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -53,13 +53,15 @@ func (r *Resolver) ResolveDependencies(projectPath string) ([]Dependency, error)
 // resolveNodeDependencies resolves Node.js dependencies from package-lock.json
 func (r *Resolver) resolveNodeDependencies(projectPath string) ([]Dependency, error) {
 	lockFile := filepath.Join(projectPath, "package-lock.json")
-	data, err := ioutil.ReadFile(lockFile)
+	data, err := os.ReadFile(lockFile)
 	if err != nil {
 		return nil, fmt.Errorf("no package-lock.json found")
 	}
 
+	// Parse package-lock.json (handle both lockfileVersion 2 and 3)
 	var packageLock struct {
-		Dependencies map[string]struct {
+		LockfileVersion int `json:"lockfileVersion"`
+		Dependencies    map[string]struct {
 			Version string `json:"version"`
 		} `json:"dependencies"`
 		Packages map[string]struct {
@@ -72,21 +74,45 @@ func (r *Resolver) resolveNodeDependencies(projectPath string) ([]Dependency, er
 	}
 
 	var deps []Dependency
-	for name, info := range packageLock.Dependencies {
-		deps = append(deps, Dependency{
-			Name:      name,
-			Version:   info.Version,
-			Ecosystem: "node",
-		})
+
+	// Handle lockfileVersion 3 (npm 7+)
+	if packageLock.LockfileVersion >= 3 {
+		for name, info := range packageLock.Packages {
+			// Skip root package
+			if name == "" {
+				continue
+			}
+			deps = append(deps, Dependency{
+				Name:      name,
+				Version:   info.Version,
+				Ecosystem: "node",
+			})
+		}
+	} else {
+		// Handle lockfileVersion 2 (npm 6 and earlier)
+		for name, info := range packageLock.Dependencies {
+			deps = append(deps, Dependency{
+				Name:      name,
+				Version:   info.Version,
+				Ecosystem: "node",
+			})
+		}
 	}
 
 	return deps, nil
 }
 
-// resolvePythonDependencies resolves Python dependencies from requirements.txt
+// resolvePythonDependencies resolves Python dependencies from requirements.txt or pyproject.toml
 func (r *Resolver) resolvePythonDependencies(projectPath string) ([]Dependency, error) {
+	// Try pyproject.toml first (modern Python projects)
+	pyprojectFile := filepath.Join(projectPath, "pyproject.toml")
+	if deps, err := r.resolvePyprojectToml(pyprojectFile); err == nil {
+		return deps, nil
+	}
+
+	// Try requirements.txt
 	reqFile := filepath.Join(projectPath, "requirements.txt")
-	data, err := ioutil.ReadFile(reqFile)
+	data, err := os.ReadFile(reqFile)
 	if err != nil {
 		// Try Pipfile.lock
 		pipfileLock := filepath.Join(projectPath, "Pipfile.lock")
@@ -96,13 +122,13 @@ func (r *Resolver) resolvePythonDependencies(projectPath string) ([]Dependency, 
 	// Parse requirements.txt (simple implementation)
 	lines := splitLines(string(data))
 	var deps []Dependency
-	
+
 	for _, line := range lines {
 		line = trimComment(line)
 		if line == "" {
 			continue
 		}
-		
+
 		// Simple parsing for "package==version" format
 		if parts := splitVersion(line); len(parts) == 2 {
 			deps = append(deps, Dependency{
@@ -118,13 +144,13 @@ func (r *Resolver) resolvePythonDependencies(projectPath string) ([]Dependency, 
 
 // resolvePipfileLock resolves dependencies from Pipfile.lock
 func (r *Resolver) resolvePipfileLock(pipfileLock string) ([]Dependency, error) {
-	data, err := ioutil.ReadFile(pipfileLock)
+	data, err := os.ReadFile(pipfileLock)
 	if err != nil {
 		return nil, fmt.Errorf("no Python requirements file found")
 	}
 
 	var pipfile struct {
-		Packages map[string]string `json:"packages"`
+		Packages    map[string]string `json:"packages"`
 		DevPackages map[string]string `json:"dev-packages"`
 	}
 
@@ -144,18 +170,62 @@ func (r *Resolver) resolvePipfileLock(pipfileLock string) ([]Dependency, error) 
 	return deps, nil
 }
 
+// resolvePyprojectToml resolves dependencies from pyproject.toml
+func (r *Resolver) resolvePyprojectToml(pyprojectFile string) ([]Dependency, error) {
+	data, err := os.ReadFile(pyprojectFile)
+	if err != nil {
+		return nil, fmt.Errorf("no pyproject.toml found")
+	}
+
+	// Simple pyproject.toml parsing (would need TOML parser in production)
+	lines := splitLines(string(data))
+	var deps []Dependency
+	inDependencies := false
+
+	for _, line := range lines {
+		line = trimComment(line)
+
+		if strings.Contains(line, "[project.dependencies]") || strings.Contains(line, "[tool.poetry.dependencies]") {
+			inDependencies = true
+			continue
+		}
+
+		if inDependencies && strings.HasPrefix(line, "[") {
+			// End of dependencies section
+			break
+		}
+
+		if inDependencies && line != "" {
+			// Simple parsing for "package==version" format
+			if parts := splitVersion(line); len(parts) == 2 {
+				deps = append(deps, Dependency{
+					Name:      parts[0],
+					Version:   parts[1],
+					Ecosystem: "python",
+				})
+			}
+		}
+	}
+
+	if len(deps) == 0 {
+		return nil, fmt.Errorf("no dependencies found in pyproject.toml")
+	}
+
+	return deps, nil
+}
+
 // resolveRustDependencies resolves Rust dependencies from Cargo.lock
 func (r *Resolver) resolveRustDependencies(projectPath string) ([]Dependency, error) {
 	lockFile := filepath.Join(projectPath, "Cargo.lock")
-	data, err := ioutil.ReadFile(lockFile)
+	data, err := os.ReadFile(lockFile)
 	if err != nil {
 		return nil, fmt.Errorf("no Cargo.lock found")
 	}
 
 	var cargoLock struct {
 		Package []struct {
-			Name     string `json:"name"`
-			Version  string `json:"version"`
+			Name    string `json:"name"`
+			Version string `json:"version"`
 		} `json:"package"`
 	}
 
@@ -178,7 +248,7 @@ func (r *Resolver) resolveRustDependencies(projectPath string) ([]Dependency, er
 // resolveGoDependencies resolves Go dependencies from go.mod
 func (r *Resolver) resolveGoDependencies(projectPath string) ([]Dependency, error) {
 	goModFile := filepath.Join(projectPath, "go.mod")
-	data, err := ioutil.ReadFile(goModFile)
+	data, err := os.ReadFile(goModFile)
 	if err != nil {
 		return nil, fmt.Errorf("no go.mod found")
 	}
@@ -186,7 +256,7 @@ func (r *Resolver) resolveGoDependencies(projectPath string) ([]Dependency, erro
 	// Simple go.mod parsing (would need more sophisticated parsing in production)
 	lines := splitLines(string(data))
 	var deps []Dependency
-	
+
 	for _, line := range lines {
 		line = trimComment(line)
 		if !contains(line, "require") && contains(line, " ") {
@@ -207,7 +277,7 @@ func (r *Resolver) resolveGoDependencies(projectPath string) ([]Dependency, erro
 // resolveRubyDependencies resolves Ruby dependencies from Gemfile.lock
 func (r *Resolver) resolveRubyDependencies(projectPath string) ([]Dependency, error) {
 	lockFile := filepath.Join(projectPath, "Gemfile.lock")
-	data, err := ioutil.ReadFile(lockFile)
+	data, err := os.ReadFile(lockFile)
 	if err != nil {
 		return nil, fmt.Errorf("no Gemfile.lock found")
 	}
@@ -216,7 +286,7 @@ func (r *Resolver) resolveRubyDependencies(projectPath string) ([]Dependency, er
 	lines := splitLines(string(data))
 	var deps []Dependency
 	inSpecs := false
-	
+
 	for _, line := range lines {
 		line = trimComment(line)
 		if contains(line, "specs:") {
@@ -259,13 +329,13 @@ func splitVersion(s string) []string {
 			return strings.SplitN(s, op, 2)
 		}
 	}
-	
+
 	// Handle "package version" (space separated)
 	fields := strings.Fields(s)
 	if len(fields) >= 2 {
 		return []string{fields[0], fields[1]}
 	}
-	
+
 	return []string{s}
 }
 

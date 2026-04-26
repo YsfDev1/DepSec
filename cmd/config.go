@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/DepSec/config"
+	"github.com/YsfDev1/DepSec/config"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +27,7 @@ var showCmd = &cobra.Command{
 		}
 
 		config := configManager.Get()
-		
+
 		fmt.Println("DepSec Configuration:")
 		fmt.Printf("  Mode: %s\n", config.Mode)
 		fmt.Printf("  Min Severity: %s\n", config.MinSeverity)
@@ -48,7 +48,7 @@ var setCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Set configuration value",
 	Long:  `Set a specific configuration value`,
-	Args: cobra.ExactArgs(2),
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		key := args[0]
 		value := args[1]

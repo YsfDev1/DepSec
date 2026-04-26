@@ -40,14 +40,14 @@ func NewPipeline() *Pipeline {
 		yaraScanner:     NewYARAScanner(),
 		clamavScanner:   NewClamAVScanner(),
 	}
-	
+
 	// Initialize all components
 	pipeline.cveChecker.Init()
 	pipeline.metadataChecker.Init()
 	pipeline.sandboxScanner.Init()
 	pipeline.yaraScanner.Init()
 	pipeline.clamavScanner.Init()
-	
+
 	return pipeline
 }
 
@@ -62,34 +62,44 @@ func (p *Pipeline) ScanPackage(ctx context.Context, pkg, version, ecosystem stri
 	}
 
 	// Layer 1: CVE Matching
-	if findings, err := p.cveChecker.CheckCVEs(ctx, pkg, version, ecosystem); err == nil {
-		result.Findings = append(result.Findings, findings...)
+	findings, err := p.cveChecker.CheckCVEs(ctx, pkg, version, ecosystem)
+	if err != nil {
+		return nil, fmt.Errorf("CVE layer failed: %w", err)
 	}
+	result.Findings = append(result.Findings, findings...)
 
 	// Layer 2: Metadata Anomaly Detection
-	if findings, err := p.metadataChecker.CheckMetadata(ctx, pkg, version, ecosystem); err == nil {
-		result.Findings = append(result.Findings, findings...)
+	findings, err = p.metadataChecker.CheckMetadata(ctx, pkg, version, ecosystem)
+	if err != nil {
+		return nil, fmt.Errorf("metadata layer failed: %w", err)
 	}
+	result.Findings = append(result.Findings, findings...)
 
 	// Layer 3: Sandbox Scan (if Docker is available)
 	if p.sandboxScanner.IsAvailable() {
-		if findings, err := p.sandboxScanner.ScanInSandbox(ctx, pkg, version, ecosystem); err == nil {
-			result.Findings = append(result.Findings, findings...)
+		findings, err = p.sandboxScanner.ScanInSandbox(ctx, pkg, version, ecosystem)
+		if err != nil {
+			return nil, fmt.Errorf("sandbox layer failed: %w", err)
 		}
+		result.Findings = append(result.Findings, findings...)
 	}
 
 	// Layer 4: YARA Rule Matching (inside sandbox)
 	if p.yaraScanner.IsAvailable() {
-		if findings, err := p.yaraScanner.ScanWithYARA(ctx, pkg, version, ecosystem); err == nil {
-			result.Findings = append(result.Findings, findings...)
+		findings, err = p.yaraScanner.ScanWithYARA(ctx, pkg, version, ecosystem)
+		if err != nil {
+			return nil, fmt.Errorf("YARA layer failed: %w", err)
 		}
+		result.Findings = append(result.Findings, findings...)
 	}
 
 	// Layer 5: ClamAV Scanning (inside sandbox)
 	if p.clamavScanner.IsAvailable() {
-		if findings, err := p.clamavScanner.ScanWithClamAV(ctx, pkg, version, ecosystem); err == nil {
-			result.Findings = append(result.Findings, findings...)
+		findings, err = p.clamavScanner.ScanWithClamAV(ctx, pkg, version, ecosystem)
+		if err != nil {
+			return nil, fmt.Errorf("ClamAV layer failed: %w", err)
 		}
+		result.Findings = append(result.Findings, findings...)
 	}
 
 	// Determine if package is clean

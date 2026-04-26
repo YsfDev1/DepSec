@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/DepSec/scanner"
+	"github.com/YsfDev1/DepSec/scanner"
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +14,7 @@ var UpdateRulesCmd = &cobra.Command{
 	Long:  `Download and update YARA rules and CVE database cache`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("🔄 Updating YARA rules and CVE database...")
-		
+
 		// Initialize YARA scanner and update rules
 		yaraScanner := scanner.NewYARAScanner()
 		if err := yaraScanner.UpdateRules(); err != nil {
@@ -22,7 +22,7 @@ var UpdateRulesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		fmt.Println("✅ YARA rules updated")
-		
+
 		// Initialize CVE checker and update cache
 		cveChecker := scanner.NewCVEChecker()
 		if err := cveChecker.Init(); err != nil {
@@ -30,10 +30,10 @@ var UpdateRulesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		defer cveChecker.Close()
-		
+
 		// CVE cache update would go here (placeholder)
 		fmt.Println("✅ CVE cache updated")
-		
+
 		fmt.Println("\n🎉 All rules and caches updated successfully!")
 	},
 }

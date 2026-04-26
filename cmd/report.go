@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/DepSec/cache"
-	"github.com/DepSec/scanner"
-	"github.com/DepSec/output"
+	"github.com/YsfDev1/DepSec/cache"
+	"github.com/YsfDev1/DepSec/output"
+	"github.com/YsfDev1/DepSec/scanner"
 	"github.com/spf13/cobra"
 )
 

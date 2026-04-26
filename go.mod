@@ -1,4 +1,4 @@
-module github.com/DepSec
+module github.com/YsfDev1/DepSec
 
 go 1.21
 

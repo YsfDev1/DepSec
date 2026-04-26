@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/DepSec/cmd"
+	"github.com/YsfDev1/DepSec/cmd"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +15,9 @@ func main() {
 		Long: `DepSec is a CLI tool that automatically scans packages in an isolated sandbox
 before they touch the host system. The user installs DepSec once,
 enables auto-scan, and every package install is silently screened
-from that point on.`,
+from that point on.
+
+Use "depsec help [command]" for more information about a specific command.`,
 		Version: "0.1.0",
 	}
 

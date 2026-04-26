@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/DepSec/scanner"
+	"github.com/YsfDev1/DepSec/scanner"
 )
 
 // Formatter handles different output formats for scan results
@@ -137,22 +137,22 @@ func (f *Formatter) FormatStatus(status map[string]interface{}) string {
 	fmt.Fprintf(&builder, "  Mode: %s\n", status["mode"])
 	fmt.Fprintf(&builder, "  Min Severity: %s\n", status["min_severity"])
 	fmt.Fprintf(&builder, "  Offline: %t\n", status["offline"])
-	
+
 	if autoScan, ok := status["auto_scan"].(map[string]interface{}); ok {
 		fmt.Fprintf(&builder, "  Auto-Scan: %t\n", autoScan["enabled"])
 		if ecosystems, ok := autoScan["ecosystems"].([]string); ok {
 			fmt.Fprintf(&builder, "    Ecosystems: %s\n", strings.Join(ecosystems, ", "))
 		}
 	}
-	
+
 	if docker, ok := status["docker"].(map[string]interface{}); ok {
 		fmt.Fprintf(&builder, "  Docker: %t\n", docker["enabled"])
 	}
-	
+
 	if clamav, ok := status["clamav"].(map[string]interface{}); ok {
 		fmt.Fprintf(&builder, "  ClamAV: %t\n", clamav["enabled"])
 	}
-	
+
 	if yara, ok := status["yara"].(map[string]interface{}); ok {
 		fmt.Fprintf(&builder, "  YARA: %t\n", yara["enabled"])
 	}
@@ -171,7 +171,7 @@ func (f *Formatter) FormatDoctor(checks []HealthCheck) string {
 		if !check.Passed {
 			status = "❌"
 		}
-		
+
 		fmt.Fprintf(&builder, "%s %s\n", status, check.Name)
 		if check.Message != "" {
 			fmt.Fprintf(&builder, "   %s\n", check.Message)
@@ -202,7 +202,7 @@ func (f *Formatter) getHighestSeverity(findings []scanner.Finding) string {
 
 	severityOrder := map[string]int{
 		"LOW":      1,
-		"MEDIUM":    2,
+		"MEDIUM":   2,
 		"HIGH":     3,
 		"CRITICAL": 4,
 	}
@@ -222,21 +222,21 @@ func (f *Formatter) getHighestSeverity(findings []scanner.Finding) string {
 
 // HealthCheck represents a health check result
 type HealthCheck struct {
-	Name        string
-	Passed      bool
-	Message     string
-	Suggestion  string
+	Name       string
+	Passed     bool
+	Message    string
+	Suggestion string
 }
 
 // ScanSummary represents a summary of scan results
 type ScanSummary struct {
-	Total      int
-	Clean      int
-	Low        int
-	Medium     int
-	High       int
-	Critical   int
-	Duration   string
+	Total    int
+	Clean    int
+	Low      int
+	Medium   int
+	High     int
+	Critical int
+	Duration string
 }
 
 // FormatSummary formats a scan summary
