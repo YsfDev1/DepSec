@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-04-26
+
 ### Changed
 - Project renamed from DepSec to SecChain
 - CLI binary renamed from secchain to cc
 - Updated all documentation and references to use new naming
 - Updated GitHub repository URLs to YsfDev1/SecChain
+- Added support for "latest" version in scan commands with warning for CVE skip
 
 ### Added
 - GitHub Actions CI/CD pipeline
@@ -19,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issue and PR templates
 - Security policy and vulnerability reporting process
 - Dependabot configuration for dependency management
+- Improved .gitignore for Go projects
+- Version string validation with semver format checking
+
+### Fixed
+- CVE layer now properly handles "latest" version by skipping with warning
+- Fixed variable scope in pipeline.go for findings and err
+- Config directory creation now happens before any file writes
 
 ### Security
 - Added security scanning workflows
