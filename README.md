@@ -16,7 +16,7 @@
 - **Multi-Ecosystem** - Support for Node.js, Python, Rust, Go, Ruby
 - **Multiple Formats** - Table, JSON, and minimal output formats
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Installation
 
@@ -131,7 +131,7 @@ graph TD
     N --> O[Table/JSON/Minimal]
 ```
 
-## 📖 Documentation
+##  Documentation
 
 - [📚 Full Documentation](docs/README.md)
 - [🔧 Configuration Guide](docs/README.md#configuration)
@@ -139,14 +139,14 @@ graph TD
 - [🤝 Contributing Guide](CONTRIBUTING.md)
 - [📋 API Reference](docs/README.md#api-reference)
 
-## 🎯 Supported Ecosystems
+##  Supported Ecosystems
 
 | Ecosystem | Package Manager | Status |
 |-----------|----------------|--------|
 | Node.js   | npm, yarn      | ✅ Full |
 | Python    | pip, poetry    | ✅ Full |
-| Rust      | cargo         | ✅ Full |
-| Go        | go modules    | ✅ Full |
+| Rust      | cargo          | ✅ Full |
+| Go        | go modules     | ✅ Full |
 | Ruby      | gem, bundler   | ✅ Full |
 
 ## 🔧 Commands
@@ -215,7 +215,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📊 Real-World Results
+##  Real-World Results
 
 SecChain has successfully identified real vulnerabilities in popular packages:
 
@@ -256,7 +256,7 @@ SecChain takes security seriously:
 
 For security issues, please email [security@secchain.dev](mailto:security@secchain.dev) instead of using public issues.
 
-## 📜 License
+## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
@@ -273,9 +273,8 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 - 🐛 [Report Bugs](https://github.com/YsfDev1/SecChain/issues)
 - 💡 [Request Features](https://github.com/YsfDev1/SecChain/issues)
 - 💬 [Discussions](https://github.com/YsfDev1/SecChain/discussions)
-- 📧 [Email Support](mailto:hello@secchain.dev)
-- 🔒 [Security Issues](mailto:security@secchain.dev)
+- 📧 [Email Support](mailto:yusuflinuxx@gmail.com)
 
 ---
 
-**🛡️ SecChain - Protecting your dependencies from supply chain attacks**
+**🛡️ SecChain - Protect your chain**
