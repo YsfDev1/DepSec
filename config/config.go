@@ -11,45 +11,45 @@ import (
 // Config represents DepSec configuration
 type Config struct {
 	// General settings
-	Mode         string `toml:"mode"`         // interactive, strict, log
-	MinSeverity  string `toml:"min_severity"` // low, medium, high, critical
-	Offline      bool   `toml:"offline"`
-	
+	Mode        string `toml:"mode"`         // interactive, strict, log
+	MinSeverity string `toml:"min_severity"` // low, medium, high, critical
+	Offline     bool   `toml:"offline"`
+
 	// Auto-scan settings
 	AutoScan struct {
-		Enabled bool     `toml:"enabled"`
+		Enabled    bool     `toml:"enabled"`
 		Ecosystems []string `toml:"ecosystems"` // node, python, rust, go, ruby
 	} `toml:"auto_scan"`
-	
+
 	// Docker settings
 	Docker struct {
-		Enabled    bool   `toml:"enabled"`
-		Image      string `toml:"image"`
-		Timeout    int    `toml:"timeout"` // seconds
+		Enabled bool   `toml:"enabled"`
+		Image   string `toml:"image"`
+		Timeout int    `toml:"timeout"` // seconds
 	} `toml:"docker"`
-	
+
 	// ClamAV settings
 	ClamAV struct {
 		Enabled bool   `toml:"enabled"`
 		Socket  string `toml:"socket"`
 	} `toml:"clamav"`
-	
+
 	// YARA settings
 	YARA struct {
-		Enabled      bool     `toml:"enabled"`
-		RulesPath    string   `toml:"rules_path"`
-		CustomRules  []string `toml:"custom_rules"`
+		Enabled     bool     `toml:"enabled"`
+		RulesPath   string   `toml:"rules_path"`
+		CustomRules []string `toml:"custom_rules"`
 	} `toml:"yara"`
-	
+
 	// Cache settings
 	Cache struct {
 		Enabled bool `toml:"enabled"`
 		TTL     int  `toml:"ttl"` // hours
 	} `toml:"cache"`
-	
+
 	// Output settings
 	Output struct {
-		Format    string `toml:"format"`    // table, json, minimal
+		Format    string `toml:"format"` // table, json, minimal
 		ShowClean bool   `toml:"show_clean"`
 		Verbose   bool   `toml:"verbose"`
 	} `toml:"output"`
@@ -133,9 +133,9 @@ func (m *Manager) getDefaultConfig() *Config {
 			Socket:  "/var/run/clamav/clamd.sock",
 		},
 		YARA: struct {
-			Enabled      bool     `toml:"enabled"`
-			RulesPath    string   `toml:"rules_path"`
-			CustomRules  []string `toml:"custom_rules"`
+			Enabled     bool     `toml:"enabled"`
+			RulesPath   string   `toml:"rules_path"`
+			CustomRules []string `toml:"custom_rules"`
 		}{
 			Enabled:   true,
 			RulesPath: filepath.Join(getConfigDir(), "rules"),

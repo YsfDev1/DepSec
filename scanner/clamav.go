@@ -53,7 +53,7 @@ func (c *ClamAVScanner) ScanWithClamAV(ctx context.Context, pkg, version, ecosys
 
 	// This would run ClamAV inside the sandbox container
 	// For now, return placeholder implementation
-	
+
 	// Scan for malware signatures
 	if finding := c.scanMalware(pkg, version); finding != nil {
 		findings = append(findings, *finding)

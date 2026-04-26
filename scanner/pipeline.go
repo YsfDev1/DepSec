@@ -3,6 +3,7 @@ package scanner
 import (
 	"context"
 	"fmt"
+	"regexp"
 )
 
 // Pipeline orchestrates the layered scanning process
@@ -53,6 +54,11 @@ func NewPipeline() *Pipeline {
 
 // ScanPackage runs the full scanning pipeline on a package
 func (p *Pipeline) ScanPackage(ctx context.Context, pkg, version, ecosystem string) (*ScanResult, error) {
+	// Validate version string format
+	if err := validateVersion(version); err != nil {
+		return nil, fmt.Errorf("invalid version format for %s: %w", pkg, err)
+	}
+
 	result := &ScanResult{
 		Package:   pkg,
 		Version:   version,
@@ -138,4 +144,14 @@ type Dependency struct {
 	Name      string
 	Version   string
 	Ecosystem string
+}
+
+// validateVersion validates that a version string follows semver format
+func validateVersion(version string) error {
+	// Basic semver validation: major.minor.patch
+	semverRegex := regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+$`)
+	if !semverRegex.MatchString(version) {
+		return fmt.Errorf("version must follow semver format (major.minor.patch), got: %s", version)
+	}
+	return nil
 }

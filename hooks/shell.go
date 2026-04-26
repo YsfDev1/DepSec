@@ -365,9 +365,9 @@ func (s *ShellManager) removeHooks(content string) string {
 // GetStatus returns the current status of auto-scan hooks
 func (s *ShellManager) GetStatus() map[string]interface{} {
 	return map[string]interface{}{
-		"enabled":   s.IsEnabled(),
-		"shell":     s.ShellType,
-		"config":    s.ShellRC,
-		"hooks":     []string{"npm", "pip", "cargo", "go", "gem"},
+		"enabled": s.IsEnabled(),
+		"shell":   s.ShellType,
+		"config":  s.ShellRC,
+		"hooks":   []string{"npm", "pip", "cargo", "go", "gem"},
 	}
 }

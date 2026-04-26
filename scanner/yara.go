@@ -31,7 +31,7 @@ func (y *YARAScanner) Init() error {
 			y.available = false
 			return fmt.Errorf("failed to create rules directory: %w", err)
 		}
-		
+
 		// Create default rules
 		if err := y.createDefaultRules(); err != nil {
 			y.available = false
@@ -58,7 +58,7 @@ func (y *YARAScanner) ScanWithYARA(ctx context.Context, pkg, version, ecosystem 
 
 	// This would run YARA inside the sandbox container
 	// For now, return placeholder implementation
-	
+
 	// Scan for obfuscated code
 	if finding := y.scanObfuscatedCode(pkg, version); finding != nil {
 		findings = append(findings, *finding)
@@ -113,7 +113,7 @@ func (y *YARAScanner) scanMaliciousSignatures(pkg, version string) *Finding {
 // createDefaultRules creates the default YARA rules file
 func (y *YARAScanner) createDefaultRules() error {
 	rulesFile := filepath.Join(y.rulesPath, "default.yar")
-	
+
 	rules := `// DepSec Default YARA Rules
 // These rules detect common malicious patterns in package code
 
@@ -240,7 +240,7 @@ func (y *YARAScanner) AddCustomRule(rulePath string) error {
 	if _, err := os.Stat(rulePath); os.IsNotExist(err) {
 		return fmt.Errorf("rule file does not exist: %s", rulePath)
 	}
-	
+
 	y.customRules = append(y.customRules, rulePath)
 	return nil
 }

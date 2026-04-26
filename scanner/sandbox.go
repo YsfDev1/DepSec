@@ -6,17 +6,41 @@ import (
 	"io"
 )
 
+// DockerConfig represents Docker container configuration for sandbox scanning
+type DockerConfig struct {
+	Timeout      int    `json:"timeout"`        // Container timeout in seconds
+	MemoryLimit  string `json:"memory_limit"`   // Memory limit (e.g., "512mb")
+	NetworkMode  string `json:"network_mode"`   // Network mode ("none" for disabled)
+	ReadOnlyRoot bool   `json:"read_only_root"` // Read-only root filesystem
+	CPUShares    int64  `json:"cpu_shares"`     // CPU shares (relative weight)
+	PidsLimit    int64  `json:"pids_limit"`     // Maximum number of processes
+}
+
+// DefaultDockerConfig returns the default Docker configuration
+func DefaultDockerConfig() DockerConfig {
+	return DockerConfig{
+		Timeout:      30,
+		MemoryLimit:  "512mb",
+		NetworkMode:  "none",
+		ReadOnlyRoot: true,
+		CPUShares:    512,
+		PidsLimit:    100,
+	}
+}
+
 // SandboxScanner handles Docker-based sandbox scanning
 type SandboxScanner struct {
 	// dockerClient *client.Client  // Temporarily commented out
 	available    bool
 	imageName    string
+	dockerConfig DockerConfig
 }
 
 // NewSandboxScanner creates a new sandbox scanner
 func NewSandboxScanner() *SandboxScanner {
 	return &SandboxScanner{
-		imageName: "depsec/scanner:latest",
+		imageName:    "depsec/scanner:latest",
+		dockerConfig: DefaultDockerConfig(),
 	}
 }
 
@@ -28,16 +52,16 @@ func (s *SandboxScanner) Init() error {
 	//	s.available = false
 	//	return fmt.Errorf("Docker not available: %w", err)
 	// }
-	
+
 	// s.dockerClient = cli
-	
+
 	// Test Docker connection
 	// _, err = cli.Ping(context.Background())
 	// if err != nil {
 	//	s.available = false
 	//	return fmt.Errorf("Docker daemon not running: %w", err)
 	// }
-	
+
 	s.available = false // Temporarily disabled until Docker is added back
 	return nil
 }
@@ -235,4 +259,3 @@ func (s *SandboxScanner) Close() error {
 	// }
 	return nil
 }
-

@@ -19,7 +19,7 @@ type Cache struct {
 // NewCache creates a new cache instance
 func NewCache() (*Cache, error) {
 	cacheDir := getCacheDir()
-	
+
 	// Create cache directory if it doesn't exist
 	if err := os.MkdirAll(cacheDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create cache directory: %w", err)

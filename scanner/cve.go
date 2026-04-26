@@ -17,20 +17,20 @@ import (
 
 // CVEChecker handles CVE matching using OSV and NVD APIs
 type CVEChecker struct {
-	db        *sql.DB
-	cacheTTL  time.Duration
-	offline   bool
+	db       *sql.DB
+	cacheTTL time.Duration
+	offline  bool
 }
 
 // CVE represents a Common Vulnerabilities and Exposures record
 type CVE struct {
-	ID          string    `json:"id"`
-	Summary     string    `json:"summary"`
-	Severity    string    `json:"severity"`
-	Published   time.Time `json:"published"`
-	Modified    time.Time `json:"modified"`
-	Affected    []string  `json:"affected"`
-	References  []string  `json:"references"`
+	ID         string    `json:"id"`
+	Summary    string    `json:"summary"`
+	Severity   string    `json:"severity"`
+	Published  time.Time `json:"published"`
+	Modified   time.Time `json:"modified"`
+	Affected   []string  `json:"affected"`
+	References []string  `json:"references"`
 }
 
 // NewCVEChecker creates a new CVE checker
@@ -43,7 +43,7 @@ func NewCVEChecker() *CVEChecker {
 // Init initializes the CVE checker and database
 func (c *CVEChecker) Init() error {
 	cacheDir := getCacheDir()
-	
+
 	// Create cache directory if it doesn't exist
 	if err := os.MkdirAll(cacheDir, 0755); err != nil {
 		return fmt.Errorf("failed to create cache directory: %w", err)
@@ -120,7 +120,37 @@ func (c *CVEChecker) CheckCVEs(ctx context.Context, pkg, version, ecosystem stri
 
 // queryOSV queries the OSV API for CVEs
 func (c *CVEChecker) queryOSV(ctx context.Context, pkg, version, ecosystem string) ([]CVE, error) {
-	// Map ecosystem to OSV ecosystem names
+	osvEcosystem, err := c.mapEcosystemToOSV(ecosystem)
+	if err != nil {
+		return nil, err
+	}
+
+	query, err := c.buildOSVQuery(pkg, osvEcosystem, version)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.makeOSVRequest(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("OSV API returned status %d: %s", resp.StatusCode, string(body))
+	}
+
+	osvResponse, err := c.parseOSVResponse(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.buildCVEResults(osvResponse, pkg, version), nil
+}
+
+// mapEcosystemToOSV maps ecosystem names to OSV ecosystem names
+func (c *CVEChecker) mapEcosystemToOSV(ecosystem string) (string, error) {
 	ecosystemMap := map[string]string{
 		"node":   "npm",
 		"python": "pypi",
@@ -131,10 +161,13 @@ func (c *CVEChecker) queryOSV(ctx context.Context, pkg, version, ecosystem strin
 
 	osvEcosystem, ok := ecosystemMap[ecosystem]
 	if !ok {
-		return nil, fmt.Errorf("unsupported ecosystem: %s", ecosystem)
+		return "", fmt.Errorf("unsupported ecosystem: %s", ecosystem)
 	}
+	return osvEcosystem, nil
+}
 
-	// Build OSV query
+// buildOSVQuery builds the OSV API query
+func (c *CVEChecker) buildOSVQuery(pkg, osvEcosystem, version string) ([]byte, error) {
 	query := map[string]interface{}{
 		"package": map[string]interface{}{
 			"name":      pkg,
@@ -143,13 +176,12 @@ func (c *CVEChecker) queryOSV(ctx context.Context, pkg, version, ecosystem strin
 		"version": version,
 	}
 
-	queryBytes, err := json.Marshal(query)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal OSV query: %w", err)
-	}
+	return json.Marshal(query)
+}
 
-	// Make HTTP request to OSV API
-	req, err := http.NewRequestWithContext(ctx, "POST", "https://api.osv.dev/v1/query", bytes.NewReader(queryBytes))
+// makeOSVRequest makes the HTTP request to OSV API
+func (c *CVEChecker) makeOSVRequest(ctx context.Context, query []byte) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, "POST", "https://api.osv.dev/v1/query", bytes.NewReader(query))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create OSV request: %w", err)
 	}
@@ -157,102 +189,139 @@ func (c *CVEChecker) queryOSV(ctx context.Context, pkg, version, ecosystem strin
 	req.Header.Set("User-Agent", "DepSec/0.1.0")
 
 	client := &http.Client{Timeout: 30 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("failed to execute OSV request: %w", err)
-	}
-	defer resp.Body.Close()
+	return client.Do(req)
+}
 
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("OSV API returned status %d: %s", resp.StatusCode, string(body))
-	}
-
-	var osvResponse struct {
-		Vulns []struct {
-			ID      string `json:"id"`
-			Summary string `json:"summary"`
-			Details string `json:"details"`
-			Severity []struct {
-				Type  string `json:"type"`
-				Score string `json:"score"`
-			} `json:"severity"`
-			Published string `json:"published"`
-			Modified  string `json:"modified"`
-			Affected []struct {
-				Package map[string]string `json:"package"`
-				Ranges []struct {
-					Type   string `json:"type"`
-					Events []struct {
-						Introduced string `json:"introduced"`
-						Fixed      string `json:"fixed"`
-					} `json:"events"`
-				} `json:"ranges"`
-				DatabaseSpecific struct {
-					CWE []string `json:"cwe"`
-				} `json:"database_specific"`
-			} `json:"affected"`
-		} `json:"vulns"`
-	}
-
-	if err := json.NewDecoder(resp.Body).Decode(&osvResponse); err != nil {
+// parseOSVResponse parses the OSV API response
+func (c *CVEChecker) parseOSVResponse(resp *http.Response) (*osvResponse, error) {
+	var osvResp osvResponse
+	if err := json.NewDecoder(resp.Body).Decode(&osvResp); err != nil {
 		return nil, fmt.Errorf("failed to decode OSV response: %w", err)
 	}
+	return &osvResp, nil
+}
 
+// osvResponse represents the OSV API response structure
+
+type osvResponse struct {
+	Vulns []osvVuln `json:"vulns"`
+}
+
+// osvVuln represents a vulnerability from OSV API
+type osvVuln struct {
+	ID        string        `json:"id"`
+	Summary   string        `json:"summary"`
+	Details   string        `json:"details"`
+	Severity  []osvSeverity `json:"severity"`
+	Published string        `json:"published"`
+	Modified  string        `json:"modified"`
+	Affected  []osvAffected `json:"affected"`
+}
+
+// osvSeverity represents severity information
+type osvSeverity struct {
+	Type  string `json:"type"`
+	Score string `json:"score"`
+}
+
+// osvAffected represents affected package information
+type osvAffected struct {
+	Package          map[string]string   `json:"package"`
+	Ranges           []osvRange          `json:"ranges"`
+	DatabaseSpecific osvDatabaseSpecific `json:"database_specific"`
+}
+
+// osvRange represents version ranges
+type osvRange struct {
+	Type   string     `json:"type"`
+	Events []osvEvent `json:"events"`
+}
+
+// osvEvent represents version events
+type osvEvent struct {
+	Introduced string `json:"introduced"`
+	Fixed      string `json:"fixed"`
+}
+
+// osvDatabaseSpecific represents database-specific information
+type osvDatabaseSpecific struct {
+	CWE []string `json:"cwe"`
+}
+
+// buildCVEResults converts OSV response to CVE results
+func (c *CVEChecker) buildCVEResults(osvResp *osvResponse, pkg, version string) []CVE {
 	var cves []CVE
-	for _, vuln := range osvResponse.Vulns {
-		severity := "MEDIUM"
-		if len(vuln.Severity) > 0 {
-			// Parse CVSS score to determine severity
-			for _, sev := range vuln.Severity {
-				if sev.Type == "CVSS_V3" {
-					score := sev.Score
-					if score == "9.0" || score == "9.8" || score == "10.0" {
-						severity = "CRITICAL"
-					} else if score == "7.5" || score == "7.8" || score == "8.0" || score == "8.8" {
-						severity = "HIGH"
-					} else if score == "5.3" || score == "5.4" || score == "5.5" || score == "5.9" || score == "6.0" || score == "6.1" || score == "6.5" {
-						severity = "MEDIUM"
-					} else {
-						severity = "LOW"
-					}
-					break
-				}
-			}
+	for _, vuln := range osvResp.Vulns {
+		cve := c.buildCVEResult(vuln, pkg, version)
+		cves = append(cves, cve)
+	}
+	return cves
+}
+
+// buildCVEResult builds a single CVE result from OSV vulnerability
+func (c *CVEChecker) buildCVEResult(vuln osvVuln, pkg, version string) CVE {
+	severity := c.determineSeverity(vuln.Severity)
+	published, _ := time.Parse(time.RFC3339, vuln.Published)
+	modified, _ := time.Parse(time.RFC3339, vuln.Modified)
+
+	cve := CVE{
+		ID:         vuln.ID,
+		Summary:    vuln.Summary,
+		Severity:   severity,
+		Published:  published,
+		Modified:   modified,
+		Affected:   []string{pkg + "@" + version},
+		References: []string{},
+	}
+
+	cve.Affected = c.processAffectedVersions(vuln.Affected, pkg, cve.Affected)
+	return cve
+}
+
+// determineSeverity determines severity from CVSS score
+func (c *CVEChecker) determineSeverity(severities []osvSeverity) string {
+	if len(severities) == 0 {
+		return "MEDIUM"
+	}
+
+	for _, sev := range severities {
+		if sev.Type == "CVSS_V3" {
+			return c.mapScoreToSeverity(sev.Score)
 		}
+	}
+	return "MEDIUM"
+}
 
-		published, _ := time.Parse(time.RFC3339, vuln.Published)
-		modified, _ := time.Parse(time.RFC3339, vuln.Modified)
+// mapScoreToSeverity maps CVSS score to severity level
+func (c *CVEChecker) mapScoreToSeverity(score string) string {
+	switch score {
+	case "9.0", "9.8", "10.0":
+		return "CRITICAL"
+	case "7.5", "7.8", "8.0", "8.8":
+		return "HIGH"
+	case "5.3", "5.4", "5.5", "5.9", "6.0", "6.1", "6.5":
+		return "MEDIUM"
+	default:
+		return "LOW"
+	}
+}
 
-		cve := CVE{
-			ID:         vuln.ID,
-			Summary:    vuln.Summary,
-			Severity:   severity,
-			Published:  published,
-			Modified:   modified,
-			Affected:   []string{pkg + "@" + version},
-			References: []string{},
-		}
-
-		// Add more detailed affected versions
-		for _, affected := range vuln.Affected {
-			if affectedPkg, ok := affected.Package["name"]; ok && affectedPkg == pkg {
-				for _, r := range affected.Ranges {
-					if r.Type == "SEMVER" {
-						for _, event := range r.Events {
-							if event.Fixed != "" {
-								cve.Affected = append(cve.Affected, fmt.Sprintf("%s < %s", pkg, event.Fixed))
-							}
+// processAffectedVersions processes affected version ranges
+func (c *CVEChecker) processAffectedVersions(affected []osvAffected, pkg string, baseAffected []string) []string {
+	for _, aff := range affected {
+		if affectedPkg, ok := aff.Package["name"]; ok && affectedPkg == pkg {
+			for _, r := range aff.Ranges {
+				if r.Type == "SEMVER" {
+					for _, event := range r.Events {
+						if event.Fixed != "" {
+							baseAffected = append(baseAffected, fmt.Sprintf("%s < %s", pkg, event.Fixed))
 						}
 					}
 				}
 			}
 		}
-
-		cves = append(cves, cve)
 	}
-
-	return cves, nil
+	return baseAffected
 }
 
 // queryNVD queries the NVD API for CVEs (simplified implementation)

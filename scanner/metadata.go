@@ -261,7 +261,7 @@ func (m *MetadataChecker) getPackagePublishDate(ctx context.Context, pkg, versio
 // getNodePublishDate gets publish date from npm registry
 func (m *MetadataChecker) getNodePublishDate(ctx context.Context, pkg, version string) (time.Time, error) {
 	url := fmt.Sprintf("https://registry.npmjs.org/%s/%s", pkg, version)
-	
+
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return time.Time{}, err
@@ -281,9 +281,9 @@ func (m *MetadataChecker) getNodePublishDate(ctx context.Context, pkg, version s
 
 	var packageInfo struct {
 		Time struct {
-			Created string `json:"created"`
+			Created  string `json:"created"`
 			Modified string `json:"modified"`
-			Version string `json:"version"`
+			Version  string `json:"version"`
 		} `json:"time"`
 		Version string `json:"version"`
 	}
@@ -304,7 +304,7 @@ func (m *MetadataChecker) getNodePublishDate(ctx context.Context, pkg, version s
 // getPythonPublishDate gets publish date from PyPI
 func (m *MetadataChecker) getPythonPublishDate(ctx context.Context, pkg, version string) (time.Time, error) {
 	url := fmt.Sprintf("https://pypi.org/pypi/%s/%s/json", pkg, version)
-	
+
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return time.Time{}, err
@@ -324,7 +324,7 @@ func (m *MetadataChecker) getPythonPublishDate(ctx context.Context, pkg, version
 
 	var packageInfo struct {
 		UploadTime string `json:"upload_time"`
-		Releases map[string][]struct {
+		Releases   map[string][]struct {
 			UploadTime string `json:"upload_time"`
 		} `json:"releases"`
 		Urls []struct {
@@ -364,7 +364,7 @@ func (m *MetadataChecker) getInstallScripts(ctx context.Context, pkg, version, e
 // getNodeInstallScripts gets install scripts from npm package
 func (m *MetadataChecker) getNodeInstallScripts(ctx context.Context, pkg, version string) (map[string]string, error) {
 	url := fmt.Sprintf("https://registry.npmjs.org/%s/%s", pkg, version)
-	
+
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -383,7 +383,7 @@ func (m *MetadataChecker) getNodeInstallScripts(ctx context.Context, pkg, versio
 	}
 
 	var packageInfo struct {
-		Scripts map[string]string `json:"scripts"`
+		Scripts     map[string]string `json:"scripts"`
 		Maintainers []struct {
 			Name  string `json:"name"`
 			Email string `json:"email"`
