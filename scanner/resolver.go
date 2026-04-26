@@ -98,31 +98,13 @@ func (r *Resolver) resolveNodeDependencies(projectPath string) ([]Dependency, er
 			})
 		}
 	} else {
-		// Handle lockfileVersion 1 (npm 2-4) - nested structure
-		var packageLockV1 struct {
-			Dependencies map[string]struct {
-				Version      string `json:"version"`
-				Dependencies map[string]struct {
-					Version string `json:"version"`
-				} `json:"dependencies"`
-			} `json:"dependencies"`
-		}
-		if err := json.Unmarshal(data, &packageLockV1); err == nil {
-			for name, info := range packageLockV1.Dependencies {
-				deps = append(deps, Dependency{
-					Name:      name,
-					Version:   info.Version,
-					Ecosystem: "node",
-				})
-				// Handle nested dependencies
-				for nestedName, nestedInfo := range info.Dependencies {
-					deps = append(deps, Dependency{
-						Name:      nestedName,
-						Version:   nestedInfo.Version,
-						Ecosystem: "node",
-					})
-				}
-			}
+		// Handle lockfileVersion 1 (npm 5 and earlier)
+		for name, info := range packageLock.Dependencies {
+			deps = append(deps, Dependency{
+				Name:      name,
+				Version:   info.Version,
+				Ecosystem: "node",
+			})
 		}
 	}
 

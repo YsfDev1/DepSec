@@ -53,7 +53,7 @@ func NewPipeline() *Pipeline {
 }
 
 // ScanPackage runs the full scanning pipeline on a package
-func (p *Pipeline) ScanPackage(ctx context.Context, pkg, version, ecosystem string) (*ScanResult, error) {
+func (p *Pipeline) ScanPackage(ctx context.Context, pkg, version, ecosystem, minSeverity string) (*ScanResult, error) {
 	// Validate version string format
 	if err := validateVersion(version); err != nil {
 		return nil, fmt.Errorf("invalid version format for %s: %w", pkg, err)
@@ -110,6 +110,11 @@ func (p *Pipeline) ScanPackage(ctx context.Context, pkg, version, ecosystem stri
 		result.Findings = append(result.Findings, findings...)
 	}
 
+	// Filter findings by minimum severity
+	if minSeverity != "" {
+		result.Findings = p.filterBySeverity(result.Findings, minSeverity)
+	}
+
 	// Determine if package is clean
 	result.Clean = len(result.Findings) == 0
 
@@ -117,7 +122,7 @@ func (p *Pipeline) ScanPackage(ctx context.Context, pkg, version, ecosystem stri
 }
 
 // ScanProject scans a local project directory
-func (p *Pipeline) ScanProject(ctx context.Context, projectPath string) ([]*ScanResult, error) {
+func (p *Pipeline) ScanProject(ctx context.Context, projectPath, minSeverity string) ([]*ScanResult, error) {
 	// Resolve dependencies from project
 	deps, err := p.resolveDependencies(projectPath)
 	if err != nil {
@@ -126,7 +131,7 @@ func (p *Pipeline) ScanProject(ctx context.Context, projectPath string) ([]*Scan
 
 	var results []*ScanResult
 	for _, dep := range deps {
-		result, err := p.ScanPackage(ctx, dep.Name, dep.Version, dep.Ecosystem)
+		result, err := p.ScanPackage(ctx, dep.Name, dep.Version, dep.Ecosystem, minSeverity)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan package %s: %w", dep.Name, err)
 		}
@@ -150,7 +155,7 @@ type Dependency struct {
 
 // validateVersion validates that a version string follows semver format
 func validateVersion(version string) error {
-	// Reject "latest" - CVE scanning requires exact version
+	// Reject "latest" and empty versions
 	if version == "latest" || version == "" {
 		return fmt.Errorf("please specify an exact version (e.g. --version 4.17.15)")
 	}
@@ -161,4 +166,28 @@ func validateVersion(version string) error {
 		return fmt.Errorf("invalid version string: %s", version)
 	}
 	return nil
+}
+
+// filterBySeverity filters findings to only include those at or above the minimum severity
+func (p *Pipeline) filterBySeverity(findings []Finding, minSeverity string) []Finding {
+	severityOrder := map[string]int{
+		"low":      1,
+		"medium":   2,
+		"high":     3,
+		"critical": 4,
+	}
+
+	minLevel, ok := severityOrder[minSeverity]
+	if !ok {
+		return findings // Return all if invalid severity
+	}
+
+	var filtered []Finding
+	for _, finding := range findings {
+		if level, ok := severityOrder[finding.Severity]; ok && level >= minLevel {
+			filtered = append(filtered, finding)
+		}
+	}
+
+	return filtered
 }
