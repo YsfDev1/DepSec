@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.4-alpha] - 2026-04-27
+
+### Fixed
+- Config path now uses os.UserConfigDir() to respect XDG_CONFIG_HOME environment variable
+- Pipeline no longer fails open on layer timeouts - adds MEDIUM severity findings instead of returning errors
+- Shell hook injection/removal now shows exactly what will be added/removed and requires explicit user confirmation
+- CI workflow security: pinned all GitHub Actions to exact commit SHAs
+- CI workflow security: added permissions block with contents: read
+- CI workflow security: added timeout-minutes: 10 to all jobs
+
 ## [v0.1.3-alpha] - 2026-04-26
 
 ### Fixed

@@ -6,22 +6,26 @@ on:
   pull_request:
     branches: [ main, master ]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 10
+
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@0ad4b8fadaa221ab15d1502dc8a8f6b1d0fbf6bc
 
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f7228271bbc0c5
       with:
         go-version: 1.21
 
     - name: Cache Go modules
-      uses: actions/cache@v3
+      uses: actions/cache@13aacd865c20de90d75de3bbf5e0562ffca1a574
       with:
         path: |
           ~/.cache/go-build

@@ -77,6 +77,11 @@ func (s *ShellManager) EnableAutoScan() error {
 	return nil
 }
 
+// PreviewHooks returns the hooks that would be added without actually adding them
+func (s *ShellManager) PreviewHooks() string {
+	return s.generateHooks()
+}
+
 // DisableAutoScan disables auto-scan by removing shell hooks
 func (s *ShellManager) DisableAutoScan() error {
 	// Read current shell RC content
@@ -96,6 +101,33 @@ func (s *ShellManager) DisableAutoScan() error {
 	}
 
 	return nil
+}
+
+// PreviewRemoval returns the hooks that would be removed without actually removing them
+func (s *ShellManager) PreviewRemoval() string {
+	content, err := os.ReadFile(s.ShellRC)
+	if err != nil {
+		return ""
+	}
+
+	currentContent := string(content)
+
+	startMarker := "# SecChain Auto-Scan Hooks"
+	endMarker := "# End SecChain Auto-Scan Hooks"
+
+	startIndex := strings.Index(currentContent, startMarker)
+	if startIndex == -1 {
+		return "" // hooks not found
+	}
+
+	endIndex := strings.Index(currentContent[startIndex:], endMarker)
+	if endIndex == -1 {
+		return "" // malformed hooks
+	}
+
+	endIndex += startIndex + len(endMarker)
+
+	return currentContent[startIndex:endIndex]
 }
 
 // IsEnabled checks if auto-scan hooks are enabled

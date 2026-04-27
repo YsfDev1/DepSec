@@ -22,6 +22,22 @@ var enableCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		shellManager := hooks.NewShellManager()
 
+		// Show what will be added
+		hooks := shellManager.PreviewHooks()
+		fmt.Printf("The following will be added to %s:\n\n", shellManager.ShellRC)
+		fmt.Println(hooks)
+		fmt.Println("\n[Y] Confirm  [N] Cancel")
+
+		// Ask for confirmation
+		var response string
+		fmt.Print("Your choice: ")
+		fmt.Scanln(&response)
+
+		if !strings.EqualFold(response, "y") && !strings.EqualFold(response, "yes") {
+			fmt.Println("❌ Cancelled")
+			return
+		}
+
 		if err := shellManager.EnableAutoScan(); err != nil {
 			fmt.Fprintf(os.Stderr, "Error enabling auto-scan: %v\n", err)
 			os.Exit(1)
@@ -41,6 +57,27 @@ var disableCmd = &cobra.Command{
 	Long:  `Remove shell hooks for automatic scanning`,
 	Run: func(cmd *cobra.Command, args []string) {
 		shellManager := hooks.NewShellManager()
+
+		// Show what will be removed
+		hooks := shellManager.PreviewRemoval()
+		if hooks == "" {
+			fmt.Println("❌ No SecChain hooks found to remove")
+			return
+		}
+
+		fmt.Printf("The following will be removed from %s:\n\n", shellManager.ShellRC)
+		fmt.Println(hooks)
+		fmt.Println("\n[Y] Confirm  [N] Cancel")
+
+		// Ask for confirmation
+		var response string
+		fmt.Print("Your choice: ")
+		fmt.Scanln(&response)
+
+		if !strings.EqualFold(response, "y") && !strings.EqualFold(response, "yes") {
+			fmt.Println("❌ Cancelled")
+			return
+		}
 
 		if err := shellManager.DisableAutoScan(); err != nil {
 			fmt.Fprintf(os.Stderr, "Error disabling auto-scan: %v\n", err)

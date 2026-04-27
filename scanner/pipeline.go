@@ -72,42 +72,77 @@ func (p *Pipeline) ScanPackage(ctx context.Context, pkg, version, ecosystem, min
 	var err error
 	findings, err = p.cveChecker.CheckCVEs(ctx, pkg, version, ecosystem)
 	if err != nil {
-		return nil, fmt.Errorf("CVE layer failed: %w", err)
+		// Add finding for layer failure instead of returning error
+		result.Findings = append(result.Findings, Finding{
+			Layer:    "CVE",
+			Severity: "MEDIUM",
+			Reason:   "Layer timeout — result inconclusive, manual review recommended",
+			Details:  err.Error(),
+		})
+	} else {
+		result.Findings = append(result.Findings, findings...)
 	}
-	result.Findings = append(result.Findings, findings...)
 
 	// Layer 2: Metadata Anomaly Detection
 	findings, err = p.metadataChecker.CheckMetadata(ctx, pkg, version, ecosystem)
 	if err != nil {
-		return nil, fmt.Errorf("metadata layer failed: %w", err)
+		// Add finding for layer failure instead of returning error
+		result.Findings = append(result.Findings, Finding{
+			Layer:    "Metadata",
+			Severity: "MEDIUM",
+			Reason:   "Layer timeout — result inconclusive, manual review recommended",
+			Details:  err.Error(),
+		})
+	} else {
+		result.Findings = append(result.Findings, findings...)
 	}
-	result.Findings = append(result.Findings, findings...)
 
 	// Layer 3: Sandbox Scan (if Docker is available)
 	if p.sandboxScanner.IsAvailable() {
 		findings, err = p.sandboxScanner.ScanInSandbox(ctx, pkg, version, ecosystem)
 		if err != nil {
-			return nil, fmt.Errorf("sandbox layer failed: %w", err)
+			// Add finding for layer failure instead of returning error
+			result.Findings = append(result.Findings, Finding{
+				Layer:    "Sandbox",
+				Severity: "MEDIUM",
+				Reason:   "Layer timeout — result inconclusive, manual review recommended",
+				Details:  err.Error(),
+			})
+		} else {
+			result.Findings = append(result.Findings, findings...)
 		}
-		result.Findings = append(result.Findings, findings...)
 	}
 
 	// Layer 4: YARA Rule Matching (inside sandbox)
 	if p.yaraScanner.IsAvailable() {
 		findings, err = p.yaraScanner.ScanWithYARA(ctx, pkg, version, ecosystem)
 		if err != nil {
-			return nil, fmt.Errorf("YARA layer failed: %w", err)
+			// Add finding for layer failure instead of returning error
+			result.Findings = append(result.Findings, Finding{
+				Layer:    "YARA",
+				Severity: "MEDIUM",
+				Reason:   "Layer timeout — result inconclusive, manual review recommended",
+				Details:  err.Error(),
+			})
+		} else {
+			result.Findings = append(result.Findings, findings...)
 		}
-		result.Findings = append(result.Findings, findings...)
 	}
 
 	// Layer 5: ClamAV Scanning (inside sandbox)
 	if p.clamavScanner.IsAvailable() {
 		findings, err = p.clamavScanner.ScanWithClamAV(ctx, pkg, version, ecosystem)
 		if err != nil {
-			return nil, fmt.Errorf("ClamAV layer failed: %w", err)
+			// Add finding for layer failure instead of returning error
+			result.Findings = append(result.Findings, Finding{
+				Layer:    "ClamAV",
+				Severity: "MEDIUM",
+				Reason:   "Layer timeout — result inconclusive, manual review recommended",
+				Details:  err.Error(),
+			})
+		} else {
+			result.Findings = append(result.Findings, findings...)
 		}
-		result.Findings = append(result.Findings, findings...)
 	}
 
 	// Filter findings by minimum severity

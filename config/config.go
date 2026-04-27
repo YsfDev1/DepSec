@@ -268,6 +268,10 @@ func contains(slice []string, item string) bool {
 
 // getConfigDir returns the config directory path
 func getConfigDir() string {
-	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".config", "secchain")
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		home, _ := os.UserHomeDir()
+		configDir = filepath.Join(home, ".config")
+	}
+	return filepath.Join(configDir, "secchain")
 }
