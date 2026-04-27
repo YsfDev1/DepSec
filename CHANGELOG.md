@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.5-beta] - 2026-04-27
+
+### Added
+- Professional UI with Charm (lipgloss, bubbles, bubbletea) for rich terminal output
+- Progress indicators with spinners and visual feedback during scans
+- Styled severity badges with color coding (Critical/High/Medium/Low/Clean)
+- SARIF output format for GitHub/CodeQL CI integration (`--sarif-output`)
+- Baseline file support (`.secchainbaseline`) to track only new findings
+- Ignore file support (`.secchainignore`) to filter known/accepted issues
+- Standard exit codes for CI/CD: 0=success, 1=findings, 2=error, 3=critical
+- `--baseline` flag to specify custom baseline file path
+- `--ignore` flag to specify custom ignore file path
+- `--exit-code` flag to enable/disable standard exit codes
+- Enhanced output styles with icons for each scan layer
+
+### Changed
+- Scan command now uses professional table formatting with lipgloss
+- Version bumped to 0.1.5-beta
+
 ## [v0.1.4-alpha] - 2026-04-27
 
 ### Fixed

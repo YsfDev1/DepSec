@@ -44,7 +44,7 @@ var VersionCmd = &cobra.Command{
 	Long:  `Display the current version of SecChain`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("SecChain CLI Security Tool")
-		fmt.Println("Version: 0.1.0")
+		fmt.Println("Version: 0.1.5-beta")
 		fmt.Println("Build: development")
 		fmt.Println("\n🛡️  Protecting your dependencies from supply chain attacks")
 	},
